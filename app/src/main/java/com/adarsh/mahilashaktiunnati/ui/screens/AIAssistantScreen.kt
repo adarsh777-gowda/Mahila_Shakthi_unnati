@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.*
@@ -21,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,11 +28,8 @@ import com.adarsh.mahilashaktiunnati.R
 import com.adarsh.mahilashaktiunnati.ai.FinancialInsight
 import com.adarsh.mahilashaktiunnati.ai.PredictiveAnalysis
 import com.adarsh.mahilashaktiunnati.ai.Priority
-import com.adarsh.mahilashaktiunnati.ai.InsightType
 import com.adarsh.mahilashaktiunnati.viewmodel.AIViewModel
 import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
-import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 import kotlinx.coroutines.launch
 
 val Orange = Color(0xFFFFA500)
@@ -43,8 +40,7 @@ fun AIAssistantScreen(
     context: android.content.Context,
     aiViewModel: AIViewModel,
     memberViewModel: MemberViewModel,
-    onBack: () -> Unit,
-    onLanguageChanged: () -> Unit = {}
+    onBack: () -> Unit
 ) {
     val chatMessages by aiViewModel.chatMessages.collectAsState()
     val insights by aiViewModel.insights.collectAsState()
@@ -53,11 +49,8 @@ fun AIAssistantScreen(
     val aiMessage by aiViewModel.aiMessage.collectAsState()
     
     val members by memberViewModel.members.collectAsState()
-    // For AI analysis, we might need all savings and loans, not just for member 0
-    // If the ViewModel has these as StateFlows, we should use those.
-    // Assuming we need all data for general analysis.
-    val totalSavings by memberViewModel.totalSavings.collectAsState()
-    val totalLoan by memberViewModel.totalLoan.collectAsState()
+    val analyzeSavingsPrompt = stringResource(R.string.analyze_savings_trends)
+    val assessLoanRisksPrompt = stringResource(R.string.assess_loan_risks)
     
     var query by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -75,7 +68,6 @@ fun AIAssistantScreen(
     // Show AI message snackbar
     LaunchedEffect(aiMessage) {
         aiMessage?.let {
-            // Show message handling (you can implement snackbar here if needed)
             aiViewModel.consumeMessage()
         }
     }
@@ -96,7 +88,7 @@ fun AIAssistantScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Chat,
-                    contentDescription = "AI Assistant",
+                    contentDescription = stringResource(R.string.ai_assistant),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -110,8 +102,6 @@ fun AIAssistantScreen(
             Row {
                 IconButton(
                     onClick = { 
-                        // Note: Passing empty lists if specific ones aren't available yet
-                        // Ideally AIViewModel should fetch its own data or take it from MemberViewModel
                         aiViewModel.analyzeData(members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
                     },
                     enabled = !isAnalyzing
@@ -124,7 +114,7 @@ fun AIAssistantScreen(
                     } else {
                         Icon(
                             imageVector = Icons.Default.Analytics,
-                            contentDescription = stringResource(R.string.analyze_data),
+                            contentDescription = stringResource(R.string.analyze_all_data),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -150,7 +140,7 @@ fun AIAssistantScreen(
         ) {
             Button(
                 onClick = { 
-                    aiViewModel.sendMessage(stringResource(R.string.analyze_savings_trends), members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
+                    aiViewModel.sendMessage(analyzeSavingsPrompt, members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
                 },
                 modifier = Modifier.weight(1f)
             ) {
@@ -161,7 +151,7 @@ fun AIAssistantScreen(
             
             Button(
                 onClick = { 
-                    aiViewModel.sendMessage(stringResource(R.string.assess_loan_risks), members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
+                    aiViewModel.sendMessage(assessLoanRisksPrompt, members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
                 },
                 modifier = Modifier.weight(1f)
             ) {
@@ -220,7 +210,7 @@ fun AIAssistantScreen(
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
-                label = { Text("Ask AI about your financial data...") },
+                label = { Text(stringResource(R.string.type_message)) },
                 modifier = Modifier.weight(1f),
                 enabled = !isAnalyzing,
                 maxLines = 3
@@ -239,7 +229,7 @@ fun AIAssistantScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Send,
-                    contentDescription = "Send",
+                    contentDescription = stringResource(R.string.send),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -296,7 +286,7 @@ private fun InsightsSection(insights: List<FinancialInsight>) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "🔍 AI Insights",
+                text = stringResource(R.string.ai_insights),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -363,7 +353,7 @@ private fun InsightItem(insight: FinancialInsight) {
             if (insight.actionable && insight.recommendation != null) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "💡 ${insight.recommendation}",
+                    text = stringResource(R.string.ai_recommendation_format, insight.recommendation),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium
@@ -382,7 +372,7 @@ private fun PredictionsSection(predictions: List<PredictiveAnalysis>) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "📊 Predictive Analytics",
+                text = stringResource(R.string.predictive_analytics),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -425,7 +415,7 @@ private fun PredictionItem(prediction: PredictiveAnalysis) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Confidence: ${(prediction.confidence * 100).toInt()}%",
+                    text = stringResource(R.string.prediction_confidence, (prediction.confidence * 100).toInt()),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -433,7 +423,7 @@ private fun PredictionItem(prediction: PredictiveAnalysis) {
                 Spacer(modifier = Modifier.width(8.dp))
                 
                 Text(
-                    text = "• ${prediction.timeframe}",
+                    text = stringResource(R.string.prediction_timeframe, prediction.timeframe),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

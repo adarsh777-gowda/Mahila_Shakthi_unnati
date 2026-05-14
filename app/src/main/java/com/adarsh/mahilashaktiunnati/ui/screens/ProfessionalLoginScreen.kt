@@ -42,6 +42,9 @@ fun ProfessionalLoginScreen(
     var loginMethod by remember { mutableStateOf(LoginMethod.PHONE) }
     var password by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+    val phoneNotRegisteredMessage = stringResource(R.string.phone_not_registered)
+    val invalidCredentialsMessage = stringResource(R.string.invalid_credentials)
+    val enterBothCredentialsMessage = stringResource(R.string.enter_both_credentials)
     
     // Initialize UserManager with demo users
     LaunchedEffect(Unit) {
@@ -139,7 +142,7 @@ fun ProfessionalLoginScreen(
                                 if (isRegisteredNumber) {
                                     onLoginSuccess()
                                 } else {
-                                    phoneError = context.getString(R.string.number_not_registered)
+                                    phoneError = phoneNotRegisteredMessage
                                 }
                             }
                             LoginMethod.PASSWORD -> {
@@ -147,10 +150,10 @@ fun ProfessionalLoginScreen(
                                     if (UserManager.authenticateUser(phone, password)) {
                                         onLoginSuccess()
                                     } else {
-                                        passwordError = context.getString(R.string.invalid_credentials)
+                                        passwordError = invalidCredentialsMessage
                                     }
                                 } else {
-                                    passwordError = context.getString(R.string.enter_both_credentials)
+                                    passwordError = enterBothCredentialsMessage
                                 }
                             }
                         }

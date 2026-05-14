@@ -1,17 +1,19 @@
 package com.adarsh.mahilashaktiunnati.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adarsh.mahilashaktiunnati.R
-import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.ui.theme.MahilaShaktiUnnatiTheme
+import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdvancedFeaturesScreen(
     context: android.content.Context,
@@ -19,7 +21,22 @@ fun AdvancedFeaturesScreen(
     onBack: () -> Unit,
     onLanguageChanged: () -> Unit = {}
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
+    // Note: viewModel is currently not used but kept for consistency with other screens
+    AdvancedFeaturesContent(
+        context = context,
+        onBack = onBack,
+        onLanguageChanged = onLanguageChanged
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AdvancedFeaturesContent(
+    context: android.content.Context,
+    onBack: () -> Unit,
+    onLanguageChanged: () -> Unit = {}
+) {
+    var selectedTab by remember { mutableIntStateOf(0) }
     
     Column(
         modifier = Modifier
@@ -48,25 +65,32 @@ fun AdvancedFeaturesScreen(
         Spacer(modifier = Modifier.height(16.dp))
         
         // Tab Selection
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val tabs = listOf(
-        stringResource(R.string.voice_recording) to stringResource(R.string.voice_recording_tab),
-        stringResource(R.string.biometrics) to stringResource(R.string.biometrics_tab),
-        stringResource(R.string.qr_attendance) to stringResource(R.string.qr_attendance_tab),
-        stringResource(R.string.loan_reminders) to stringResource(R.string.loan_reminders_tab),
-        stringResource(R.string.multi_language) to stringResource(R.string.multi_language_tab),
-        stringResource(R.string.emergency_backup) to stringResource(R.string.emergency_backup_tab)
-    )
-            tabs.forEachIndexed { index, tab ->
-                FilterChip(
-                    onClick = { selectedTab = index },
-                    label = { Text(tab) },
-                    selected = selectedTab == index,
-                    modifier = Modifier.weight(1f)
-                )
+                stringResource(R.string.voice_recording) to stringResource(R.string.voice_recording_tab),
+                stringResource(R.string.biometrics) to stringResource(R.string.biometrics_tab),
+                stringResource(R.string.qr_attendance) to stringResource(R.string.qr_attendance_tab),
+                stringResource(R.string.loan_reminders) to stringResource(R.string.loan_reminders_tab),
+                stringResource(R.string.multi_language) to stringResource(R.string.multi_language_tab),
+                stringResource(R.string.emergency_backup) to stringResource(R.string.emergency_backup_tab)
+            )
+            
+            // Display tabs in rows of 2 to avoid cramped layout
+            tabs.chunked(2).forEachIndexed { rowIndex, rowTabs ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    rowTabs.forEachIndexed { colIndex, tab ->
+                        val index = rowIndex * 2 + colIndex
+                        FilterChip(
+                            onClick = { selectedTab = index },
+                            label = { Text(tab.second) },
+                            selected = selectedTab == index,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
         }
         
@@ -91,7 +115,7 @@ fun AdvancedFeaturesScreen(
         ) {
             Button(
                 onClick = onBack,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.back_to_dashboard))
             }
@@ -132,5 +156,27 @@ private fun SimpleAdvancedSection(
                 Text("Coming Soon")
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AdvancedFeaturesScreenPreview() {
+    MahilaShaktiUnnatiTheme {
+        AdvancedFeaturesContent(
+            context = LocalContext.current,
+            onBack = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SimpleAdvancedSectionPreview() {
+    MahilaShaktiUnnatiTheme {
+        SimpleAdvancedSection(
+            title = "Voice Recording",
+            description = "Record voice notes for members and meetings."
+        )
     }
 }

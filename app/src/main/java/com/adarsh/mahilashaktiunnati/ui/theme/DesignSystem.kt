@@ -46,6 +46,7 @@ object DesignSystem {
         // Secondary Colors
         val Secondary = Color(0xFF4CAF50)
         val SecondaryVariant = Color(0xFF388E3C)
+        val Tertiary = Color(0xFF795548)
         val OnSecondary = Color(0xFFFFFFFF)
         
         // Surface Colors
@@ -87,6 +88,7 @@ object DesignSystem {
         val Medium = RoundedCornerShape(12.dp)
         val Large = RoundedCornerShape(16.dp)
         val ExtraLarge = RoundedCornerShape(20.dp)
+        val Circle = RoundedCornerShape(50)
         val Full = RoundedCornerShape(50)
     }
     

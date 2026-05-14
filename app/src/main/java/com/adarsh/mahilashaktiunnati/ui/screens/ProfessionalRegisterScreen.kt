@@ -1,9 +1,9 @@
 package com.adarsh.mahilashaktiunnati.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,13 +26,17 @@ import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
 import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
 import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.data.UserManager
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.viewmodel.AuthViewModel
+
+private fun isValidIndianPhoneNumber(value: String): Boolean =
+    value.length == 13 && value.startsWith("+91") && value.drop(3).all { it.isDigit() }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalRegisterScreen(
     context: android.content.Context,
+    viewModel: AuthViewModel,
     onRegisterSuccess: () -> Unit,
     onLoginSuccess: () -> Unit,
     onLanguageChanged: () -> Unit = {}
@@ -44,6 +49,9 @@ fun ProfessionalRegisterScreen(
     var isOtpSent by remember { mutableStateOf(false) }
     var isRegisteredNumber by remember { mutableStateOf(false) }
     var registrationMethod by remember { mutableStateOf(RegistrationMethod.OTP) }
+    var pendingOtpUser by remember { mutableStateOf<com.adarsh.mahilashaktiunnati.data.User?>(null) }
+    val otpRequestTimes = remember { mutableStateMapOf<String, List<Long>>() }
+    val authStatus by viewModel.status.collectAsState()
     
     // Form validation states
     var phoneError by remember { mutableStateOf("") }
@@ -51,10 +59,38 @@ fun ProfessionalRegisterScreen(
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
     var otpError by remember { mutableStateOf("") }
+    val invalidPhoneMessage = stringResource(R.string.invalid_phone)
+    val invalidOtpMessage = stringResource(R.string.invalid_otp)
+    val invalidUsernameMessage = stringResource(R.string.invalid_username)
+    val invalidPasswordMessage = stringResource(R.string.invalid_password)
+    val passwordsNotMatchMessage = stringResource(R.string.passwords_not_match)
+    val duplicatePhoneMessage = stringResource(R.string.duplicate_phone_registered)
+    val otpRateLimitMessage = stringResource(R.string.otp_rate_limit)
+    val activityRequiredMessage = stringResource(R.string.activity_required_for_otp)
     
     // Initialize UserManager with demo users
     LaunchedEffect(Unit) {
         UserManager.initializeDemoUsers()
+    }
+
+    LaunchedEffect(authStatus) {
+        when (val status = authStatus) {
+            AuthViewModel.AuthStatus.OtpSent -> isOtpSent = true
+            AuthViewModel.AuthStatus.LoggedIn -> {
+                pendingOtpUser?.let { user ->
+                    if (UserManager.registerUser(user)) {
+                        pendingOtpUser = null
+                        onRegisterSuccess()
+                    } else {
+                        otpError = duplicatePhoneMessage
+                    }
+                }
+            }
+            is AuthViewModel.AuthStatus.Error -> {
+                if (isOtpSent) otpError = status.message else phoneError = status.message
+            }
+            else -> Unit
+        }
     }
     
     // Background gradient
@@ -157,28 +193,40 @@ fun ProfessionalRegisterScreen(
                         when (registrationMethod) {
                             RegistrationMethod.OTP -> {
                                 if (!isOtpSent) {
-                                    // Send OTP
-                                    if (phoneNumber.length == 13 && username.isNotEmpty()) {
-                                        isOtpSent = true
+                                    if (isValidIndianPhoneNumber(phoneNumber) && username.isNotEmpty()) {
+                                        if (isRegisteredNumber) {
+                                            phoneError = duplicatePhoneMessage
+                                        } else {
+                                            val now = System.currentTimeMillis()
+                                            val recentRequests = otpRequestTimes[phoneNumber]
+                                                .orEmpty()
+                                                .filter { now - it < 60L * 60L * 1000L }
+
+                                            if (recentRequests.size >= 3) {
+                                                phoneError = otpRateLimitMessage
+                                            } else {
+                                                val activity = context as? Activity
+                                                if (activity != null) {
+                                                    otpRequestTimes[phoneNumber] = recentRequests + now
+                                                    viewModel.sendOtp(phoneNumber, activity)
+                                                } else {
+                                                    phoneError = activityRequiredMessage
+                                                }
+                                            }
+                                        }
                                     } else {
-                                        phoneError = stringResource(R.string.invalid_phone)
+                                        phoneError = invalidPhoneMessage
                                     }
                                 } else {
-                                    // Verify OTP and register
                                     if (otp.length == 6) {
-                                        val newUser = com.adarsh.mahilashaktiunnati.data.User(
+                                        pendingOtpUser = com.adarsh.mahilashaktiunnati.data.User(
                                             phoneNumber = phoneNumber,
                                             username = username,
                                             password = "123456" // Default password
                                         )
-                                        val registrationSuccess = UserManager.registerUser(newUser)
-                                        if (registrationSuccess) {
-                                            onRegisterSuccess()
-                                        } else {
-                                            otpError = stringResource(R.string.invalid_otp)
-                                        }
+                                        viewModel.verifyOtp(otp)
                                     } else {
-                                        otpError = stringResource(R.string.invalid_otp)
+                                        otpError = invalidOtpMessage
                                     }
                                 }
                             }
@@ -186,23 +234,23 @@ fun ProfessionalRegisterScreen(
                                 // Validate and register with password
                                 var isValid = true
                                 
-                                if (phoneNumber.isEmpty() || phoneNumber.length != 13) {
-                                    phoneError = stringResource(R.string.invalid_phone)
+                                if (!isValidIndianPhoneNumber(phoneNumber)) {
+                                    phoneError = invalidPhoneMessage
                                     isValid = false
                                 }
                                 
                                 if (username.isEmpty()) {
-                                    usernameError = stringResource(R.string.invalid_username)
+                                    usernameError = invalidUsernameMessage
                                     isValid = false
                                 }
                                 
                                 if (password.isEmpty()) {
-                                    passwordError = "ದಯವಿಟ್ಟು ಪಾಸ್ವರ್ಡ್ ನಮೂದಿಸಿ"
+                                    passwordError = invalidPasswordMessage
                                     isValid = false
                                 }
                                 
                                 if (password != confirmPassword) {
-                                    confirmPasswordError = stringResource(R.string.passwords_not_match)
+                                    confirmPasswordError = passwordsNotMatchMessage
                                     isValid = false
                                 }
                                 
@@ -216,7 +264,7 @@ fun ProfessionalRegisterScreen(
                                     if (registrationSuccess) {
                                         onRegisterSuccess()
                                     } else {
-                                        passwordError = "ಈ ಫೋನ್ ಸಂಖ್ಯೆ ಈಗಾಗಲೆ ನೋಂದಾಯಿಸಿದೆ"
+                                        passwordError = duplicatePhoneMessage
                                     }
                                 }
                             }
@@ -234,7 +282,7 @@ fun ProfessionalRegisterScreen(
 }
 
 @Composable
-internal fun AppHeader() {
+private fun RegisterAppHeader() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
@@ -273,7 +321,7 @@ internal fun AppHeader() {
         
         // App Subtitle
         Text(
-            text = "ನಮ್ಮಹಳಳರ ಸ್ವ-ಸಹಾ ಗುಂಡನಿನಲ್ಲಿ ಸಂಘಟನಕ್ಕಳಿ ಸೇರ್ವಿದಲ್ಲಿ",
+            text = "ನಮ್ಮ ಮಹಿಳೆಯರ ಸ್ವ-ಸಹಾಯ ಗುಂಪಿನೊಂದಿಗೆ ಸಂಘಟಿತರಾಗಿ",
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontSize = DesignSystem.Typography.Body2.sp
             ),
@@ -289,64 +337,56 @@ private fun RegistrationMethodSelector(
     selectedMethod: RegistrationMethod,
     onMethodSelected: (RegistrationMethod) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(DesignSystem.Shapes.Large),
-        colors = ComponentStyles.getCardColors(),
-        elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
+    Column(
+        modifier = Modifier.padding(
+            horizontal = DesignSystem.Padding.cardHorizontal,
+            vertical = DesignSystem.Padding.cardVertical
+        ),
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.cardHorizontal,
-                vertical = DesignSystem.Padding.cardVertical
+        Text(
+            text = "ನೋಂದಣಿ ವಿಧಾನ",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
             ),
-            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
+            color = DesignSystem.Colors.TextPrimary
+        )
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
         ) {
-            Text(
-                text = "ನೋಂದಣಿ ವಿಧಾನ",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = DesignSystem.Colors.TextPrimary
+            FilterChip(
+                onClick = { onMethodSelected(RegistrationMethod.OTP) },
+                label = { 
+                    Text(
+                        text = "📱 OTP",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                selected = selectedMethod == RegistrationMethod.OTP,
+                modifier = Modifier.weight(1f),
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = DesignSystem.Colors.Primary,
+                    selectedLabelColor = DesignSystem.Colors.OnPrimary
+                )
             )
             
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
-            ) {
-                FilterChip(
-                    onClick = { onMethodSelected(RegistrationMethod.OTP) },
-                    label = { 
-                        Text(
-                            text = "📱 OTP",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    selected = selectedMethod == RegistrationMethod.OTP,
-                    modifier = Modifier.weight(1f),
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DesignSystem.Colors.Primary,
-                        selectedLabelColor = DesignSystem.Colors.OnPrimary
+            FilterChip(
+                onClick = { onMethodSelected(RegistrationMethod.PASSWORD) },
+                label = { 
+                    Text(
+                        text = "🔐 ಪಾಸ್ವರ್ಡ್",
+                        style = MaterialTheme.typography.bodyMedium
                     )
+                },
+                selected = selectedMethod == RegistrationMethod.PASSWORD,
+                modifier = Modifier.weight(1f),
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = DesignSystem.Colors.Primary,
+                    selectedLabelColor = DesignSystem.Colors.OnPrimary
                 )
-                
-                FilterChip(
-                    onClick = { onMethodSelected(RegistrationMethod.PASSWORD) },
-                    label = { 
-                        Text(
-                            text = "🔐 ಪಾಸ್ವರ್ಡ್",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    selected = selectedMethod == RegistrationMethod.PASSWORD,
-                    modifier = Modifier.weight(1f),
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DesignSystem.Colors.Primary,
-                        selectedLabelColor = DesignSystem.Colors.OnPrimary
-                    )
-                )
-            }
+            )
         }
     }
 }
@@ -373,191 +413,167 @@ private fun RegistrationForm(
     isOtpSent: Boolean,
     onRegisterClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(DesignSystem.Shapes.Large),
-        colors = ComponentStyles.getCardColors(),
-        elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
+    Column(
+        modifier = Modifier.padding(
+            horizontal = DesignSystem.Padding.cardHorizontal,
+            vertical = DesignSystem.Padding.cardVertical
+        ),
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.cardHorizontal,
-                vertical = DesignSystem.Padding.cardVertical
-            ),
-            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
-        ) {
-            // Phone Number Field
+        // Phone Number Field
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = onPhoneChange,
+            label = { Text(stringResource(R.string.member_phone)) },
+            placeholder = { Text("ದೂರವಾಣಿ ಸಂಖ್ಯೆ", color = DesignSystem.Colors.TextHint) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            singleLine = true,
+            enabled = !isOtpSent,
+            isError = phoneError.isNotEmpty(),
+            shape = DesignSystem.Shapes.Medium,
+            colors = ComponentStyles.getInputFieldColors()
+        )
+        
+        if (phoneError.isNotEmpty()) {
+            Text(
+                text = phoneError,
+                color = DesignSystem.Colors.Error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        if (isRegisteredNumber) {
+            Text(
+                text = stringResource(R.string.duplicate_phone_login_warning),
+                color = DesignSystem.Colors.Warning,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        
+        // Username Field
+        OutlinedTextField(
+            value = username,
+            onValueChange = onUsernameChange,
+            label = { Text(stringResource(R.string.username)) },
+            placeholder = { Text("ಬಳಕೆದಾರರ ಹೆಸರು", color = DesignSystem.Colors.TextHint) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true,
+            enabled = !isOtpSent,
+            isError = usernameError.isNotEmpty(),
+            shape = DesignSystem.Shapes.Medium,
+            colors = ComponentStyles.getInputFieldColors()
+        )
+        
+        if (usernameError.isNotEmpty()) {
+            Text(
+                text = usernameError,
+                color = DesignSystem.Colors.Error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        
+        // Password Fields (only for password registration)
+        if (registrationMethod == RegistrationMethod.PASSWORD) {
             OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = { 
-                    phoneNumber = it
-                    phoneError = ""
-                    isRegisteredNumber = UserManager.isUserRegistered(it)
-                },
-                label = { Text(stringResource(R.string.member_phone)) },
-                placeholder = { Text(stringResource(R.string.enter_phone_hint), color = DesignSystem.Colors.TextHint) },
+                value = password,
+                onValueChange = onPasswordChange,
+                label = { Text(stringResource(R.string.password)) },
+                placeholder = { Text("ಪಾಸ್ವರ್ಡ್", color = DesignSystem.Colors.TextHint) },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                enabled = !isOtpSent,
-                isError = phoneError.isNotEmpty(),
+                isError = passwordError.isNotEmpty(),
                 shape = DesignSystem.Shapes.Medium,
                 colors = ComponentStyles.getInputFieldColors()
             )
             
-            // Phone Error Message
-            if (phoneError.isNotEmpty()) {
+            if (passwordError.isNotEmpty()) {
                 Text(
-                    text = stringResource(R.string.invalid_phone),
+                    text = passwordError,
                     color = DesignSystem.Colors.Error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
-            
-            // Username Field
+
             OutlinedTextField(
-                value = username,
-                onValueChange = onUsernameChange,
-                label = { Text(stringResource(R.string.username)) },
-                placeholder = { Text(stringResource(R.string.enter_username_hint), color = DesignSystem.Colors.TextHint) },
+                value = confirmPassword,
+                onValueChange = onConfirmPasswordChange,
+                label = { Text("ಪಾಸ್ವರ್ಡ್ ದೃಢೀಕರಿಸಿ") },
+                placeholder = { Text("ಪಾಸ್ವರ್ಡ್ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ", color = DesignSystem.Colors.TextHint) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                enabled = !isOtpSent,
-                isError = usernameError.isNotEmpty(),
+                visualTransformation = PasswordVisualTransformation(),
+                isError = confirmPasswordError.isNotEmpty(),
                 shape = DesignSystem.Shapes.Medium,
                 colors = ComponentStyles.getInputFieldColors()
             )
             
-            if (usernameError.isNotEmpty()) {
+            if (confirmPasswordError.isNotEmpty()) {
                 Text(
-                    text = usernameError,
+                    text = confirmPasswordError,
                     color = DesignSystem.Colors.Error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
+        }
+        
+        // OTP Field (only for OTP registration)
+        if (registrationMethod == RegistrationMethod.OTP && isOtpSent) {
+            OutlinedTextField(
+                value = otp,
+                onValueChange = onOtpChange,
+                label = { Text("OTP") },
+                placeholder = { Text("6-ಅಂಕಿಯ OTP", color = DesignSystem.Colors.TextHint) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                isError = otpError.isNotEmpty(),
+                shape = DesignSystem.Shapes.Medium,
+                colors = ComponentStyles.getInputFieldColors()
+            )
             
-            // OTP Error Message
             if (otpError.isNotEmpty()) {
                 Text(
-                    text = stringResource(R.string.invalid_otp),
+                    text = otpError,
                     color = DesignSystem.Colors.Error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
-            
-            // Password Fields (only for password registration)
-            if (registrationMethod == RegistrationMethod.PASSWORD) {
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = onPasswordChange,
-                    label = { Text(stringResource(R.string.password)) },
-                    placeholder = { Text(stringResource(R.string.password_hint), color = DesignSystem.Colors.TextHint) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    singleLine = true,
-                    enabled = !isOtpSent,
-                    isError = passwordError.isNotEmpty(),
-                    shape = DesignSystem.Shapes.Medium,
-                    colors = ComponentStyles.getInputFieldColors()
-                )
-                
-                // Password Error Message
-                if (passwordError.isNotEmpty()) {
-                    Text(
-                        text = stringResource(R.string.passwords_not_match),
-                        color = DesignSystem.Colors.Error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
-                    )
+        }
+        
+        Spacer(modifier = Modifier.height(DesignSystem.Spacing.sm))
+        
+        // Register Button
+        Button(
+            onClick = onRegisterClick,
+            enabled = when (registrationMethod) {
+                RegistrationMethod.OTP -> {
+                    if (!isOtpSent) isValidIndianPhoneNumber(phoneNumber) && username.isNotEmpty()
+                    else otp.length == 6
                 }
-            }    
-                OutlinedTextField(
-                    value = confirmPassword,
-                    onValueChange = onConfirmPasswordChange,
-                    label = { Text("ಪಾಸ್ವರ್ಡ್ ದೃಢೀಕರಿಸಿ") },
-                    placeholder = { Text("ಪಾಸ್ವರ್ಡ್ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ", color = DesignSystem.Colors.TextHint) },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    isError = confirmPasswordError.isNotEmpty(),
-                    shape = DesignSystem.Shapes.Medium,
-                    colors = ComponentStyles.getInputFieldColors()
-                )
-                
-                if (confirmPasswordError.isNotEmpty()) {
-                    Text(
-                        text = confirmPasswordError,
-                        color = DesignSystem.Colors.Error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
-            
-            // OTP Field (only for OTP registration)
-            if (registrationMethod == RegistrationMethod.OTP && isOtpSent) {
-                OutlinedTextField(
-                    value = otp,
-                    onValueChange = onOtpChange,
-                    label = { Text("OTP") },
-                    placeholder = { Text("6-ಅಂಕಿಯ OTP", color = DesignSystem.Colors.TextHint) },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    isError = otpError.isNotEmpty(),
-                    shape = DesignSystem.Shapes.Medium,
-                    colors = ComponentStyles.getInputFieldColors()
-                )
-                
-                if (otpError.isNotEmpty()) {
-                    Text(
-                        text = otpError,
-                        color = DesignSystem.Colors.Error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
-                    )
+                RegistrationMethod.PASSWORD -> {
+                    isValidIndianPhoneNumber(phoneNumber) && username.isNotEmpty() &&
+                    password.isNotEmpty() && confirmPassword.isNotEmpty()
                 }
-            }
-            
-            Spacer(modifier = Modifier.height(DesignSystem.Spacing.sm))
-            
-            // Register Button
-            Button(
-                onClick = onRegisterClick,
-                enabled = when (registrationMethod) {
-                    RegistrationMethod.OTP -> {
-                        if (!isOtpSent) {
-                            phoneNumber.length == 13 && username.isNotEmpty()
-                        } else {
-                            otp.length == 6
-                        }
-                    }
-                    RegistrationMethod.PASSWORD -> {
-                        phoneNumber.isNotEmpty() && username.isNotEmpty() && 
-                        password.isNotEmpty() && confirmPassword.isNotEmpty()
-                    }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DesignSystem.Buttons.Height),
+            colors = ComponentStyles.getPrimaryButtonColors(),
+            shape = DesignSystem.Shapes.Medium
+        ) {
+            Text(
+                text = when (registrationMethod) {
+                    RegistrationMethod.OTP -> if (!isOtpSent) "OTP ಕಳುಹಿಸಿ" else "ನೋಂದಣಿ ಪೂರ್ಣಗೊಳಿಸಿ"
+                    RegistrationMethod.PASSWORD -> "ನೋಂದಣಿ ಮಾಡಿ"
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DesignSystem.Buttons.Height),
-                colors = ComponentStyles.getPrimaryButtonColors(),
-                shape = DesignSystem.Shapes.Medium
-            ) {
-                Text(
-                    text = when (registrationMethod) {
-                        RegistrationMethod.OTP -> {
-                            if (!isOtpSent) "OTP ಕಳುಹಿಸಿ" else "ನೋಂದಣಿ ಪೂರ್ಣಗೊಳಿಸಿ"
-                        }
-                        RegistrationMethod.PASSWORD -> "ನೋಂದಣಿ ಮಾಡಿ"
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

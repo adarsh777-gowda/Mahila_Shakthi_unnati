@@ -3,7 +3,6 @@ package com.adarsh.mahilashaktiunnati.ai
 import com.adarsh.mahilashaktiunnati.data.entities.Member
 import com.adarsh.mahilashaktiunnati.data.entities.Savings
 import com.adarsh.mahilashaktiunnati.data.entities.Loan
-import kotlin.math.*
 import java.util.UUID
 
 data class FinancialInsight(
@@ -20,7 +19,6 @@ enum class InsightType {
     LOAN_RISK,
     MEMBER_ENGAGEMENT,
     FINANCIAL_HEALTH,
-    PREDICTION,
     RECOMMENDATION
 }
 
@@ -65,13 +63,12 @@ class AIAssistantService {
         insights.addAll(analyzeMemberEngagement(members, savings, loans))
         
         // Analyze overall financial health
-        insights.addAll(analyzeFinancialHealth(savings, loans, members))
+        insights.addAll(analyzeFinancialHealth(savings, loans))
         
         return insights.sortedByDescending { it.priority.ordinal }
     }
     
     fun generatePredictiveAnalysis(
-        members: List<Member>,
         savings: List<Savings>,
         loans: List<Loan>
     ): List<PredictiveAnalysis> {
@@ -84,7 +81,7 @@ class AIAssistantService {
             val prediction = PredictiveAnalysis(
                 category = "Savings Growth",
                 prediction = "Based on recent trends, savings are showing ${if (trend.confidence > 0.6) "positive" else "neutral"} growth",
-                confidence = trend.confidence * 100,
+                confidence = trend.confidence,
                 timeframe = "Next 3 months",
                 factors = listOf("Recent savings pattern", "Member participation rate")
             )
@@ -97,7 +94,7 @@ class AIAssistantService {
             val riskAnalysis = PredictiveAnalysis(
                 category = "Loan Risk",
                 prediction = "${unpaidLoans.size} active loans require monitoring",
-                confidence = 80.0,
+                confidence = 0.8,
                 timeframe = "Next 30 days",
                 factors = listOf("Number of active loans", "Payment history")
             )
@@ -116,7 +113,7 @@ class AIAssistantService {
         val response = when {
             query.contains("savings", ignoreCase = true) -> {
                 val totalSavings = savings.sumOf { it.amount }
-                val avgSavings = if (members.isNotEmpty()) totalSavings / members.size else 0.0
+                val avgSavings = if (members.isNotEmpty()) totalSavings.toDouble() / members.size else 0.0
                 "Total group savings: ₹$totalSavings. Average per member: ₹$avgSavings"
             }
             query.contains("loan", ignoreCase = true) -> {
@@ -174,14 +171,14 @@ class AIAssistantService {
         val totalSavings = savings.sumOf { it.amount }
         val avgSavingsPerMember = if (members.isNotEmpty()) totalSavings.toDouble() / members.size else 0.0
         val weeklySavings = savings.groupBy { 
-        java.util.Calendar.getInstance().apply {
-            time = java.util.Date(it.date)
-            get(java.util.Calendar.WEEK_OF_YEAR)
+            java.util.Calendar.getInstance().apply {
+                time = java.util.Date(it.date)
+                get(java.util.Calendar.WEEK_OF_YEAR)
+            }
         }
-    }
         
         // Find best performing week
-        val bestWeek = weeklySavings.maxByOrNull { it.value.sumOf { saving -> saving.amount } }
+        val bestWeek = weeklySavings.maxByOrNull { entry -> entry.value.sumOf { saving -> saving.amount } }
         bestWeek?.let {
             insights.add(
                 FinancialInsight(
@@ -301,14 +298,13 @@ class AIAssistantService {
     
     private fun analyzeFinancialHealth(
         savings: List<Savings>,
-        loans: List<Loan>,
-        members: List<Member>
+        loans: List<Loan>
     ): List<FinancialInsight> {
         val insights = mutableListOf<FinancialInsight>()
         
         val totalSavings = savings.sumOf { it.amount }
         val totalLoans = loans.filter { !it.isPaid }.sumOf { it.principalAmount }
-        val healthRatio = if (totalLoans > 0) totalSavings.toDouble() / totalLoans else Double.POSITIVE_INFINITY
+        val healthRatio = if (totalLoans > 0) totalSavings.toDouble() / totalLoans.toDouble() else Double.POSITIVE_INFINITY
         
         when {
             healthRatio < 0.5 -> {
@@ -351,63 +347,6 @@ class AIAssistantService {
         return insights
     }
     
-    private fun generateRiskResponse(query: String, loans: List<Loan>, savings: List<Savings>): String {
-        val totalSavings = savings.sumOf { it.amount }
-        val totalLoans = loans.filter { !it.isPaid }.sumOf { it.principalAmount }
-        val riskRatio = if (totalLoans > 0) (totalSavings.toDouble() / totalLoans) * 100 else 100.0
-        
-        return """
-            ⚠️ **Risk Assessment**
-            
-            Savings-to-Loan Ratio: ${riskRatio.toInt()}%
-            
-            Risk Level: ${
-                when {
-                    riskRatio < 50 -> "🔴 HIGH RISK"
-                    riskRatio < 100 -> "🟡 MODERATE RISK"
-                    else -> "🟢 LOW RISK"
-                }
-            }
-            
-            Immediate action needed: ${riskRatio < 50}
-            
-            Should I provide specific risk mitigation strategies?
-        """.trimIndent()
-    }
-    
-    private fun generateRecommendationResponse(query: String, members: List<Member>, savings: List<Savings>, loans: List<Loan>): String {
-        val insights = analyzeFinancialData(members, savings, loans)
-        val recommendations = generateRecommendations(insights)
-        
-        return """
-            💡 **AI Recommendations**
-            
-            Based on your current data analysis:
-            
-            ${recommendations.joinToString("\n\n")}
-            
-            Would you like detailed implementation plans for any of these recommendations?
-        """.trimIndent()
-    }
-    
-    private fun generateGeneralResponse(query: String, members: List<Member>, savings: List<Savings>, loans: List<Loan>): String {
-        return """
-            🤖 **AI Assistant**
-            
-            I can help you analyze your Mahila Shakti Unnati data and provide insights!
-            
-            Ask me about:
-            • 💰 Savings trends and analysis
-            • 🏦 Loan risk assessment
-            • 👥 Member engagement metrics
-            • ⚠️  Risk factors and mitigation
-            • 💡 AI-powered recommendations
-            • 📊 Predictive analytics
-            
-            What would you like to know about your group's financial health?
-        """.trimIndent()
-    }
-    
     // Helper functions for predictive analysis
     private fun calculateSavingsTrend(savings: List<Savings>): SavingsTrend {
         // Simple linear regression for trend calculation
@@ -434,37 +373,6 @@ class AIAssistantService {
         )
     }
     
-    private fun analyzeLoanRepaymentRisk(loans: List<Loan>, savings: List<Savings>): LoanRiskAnalysis {
-        val pendingLoans = loans.filter { !it.isPaid }
-        val highRiskLoans = pendingLoans.filter { loan ->
-            val memberSavings = savings.filter { it.memberId == loan.memberId }.sumOf { it.amount }
-            memberSavings < loan.principalAmount * 0.5 // Less than 50% coverage
-        }
-        
-        val riskPercentage = if (pendingLoans.isNotEmpty()) {
-            (highRiskLoans.size * 100.0 / pendingLoans.size)
-        } else 0.0
-        
-        return LoanRiskAnalysis(
-            riskPercentage = riskPercentage.toInt(),
-            confidence = 0.7,
-            riskFactors = listOf("Low savings coverage", "Loan to income ratio", "Payment history")
-        )
-    }
-    
-    private fun predictMemberGrowth(members: List<Member>): MemberGrowthPrediction {
-        // Simple growth prediction based on recent trends
-        val currentSize = members.size
-        val expectedGrowthRate = 0.1 // 10% monthly growth assumption
-        val expectedNewMembers = (currentSize * expectedGrowthRate).toInt().coerceAtLeast(1)
-        
-        return MemberGrowthPrediction(
-            expectedNewMembers = expectedNewMembers,
-            confidence = 0.6,
-            growthFactors = listOf("Community outreach", "Word of mouth", "Seasonal enrollment patterns")
-        )
-    }
-    
     private fun analyzeDefaultRisk(loans: List<Loan>, members: List<Member>): List<Member> {
         // Identify members with potential default risk
         return members.filter { member ->
@@ -476,30 +384,18 @@ class AIAssistantService {
     private fun calculateLinearTrend(values: List<Double>): Double {
         if (values.size < 2) return 0.0
         
-        val n = values.size
-        val sumX = (0 until n).sum()
+        val n = values.size.toDouble()
+        val sumX = values.indices.sumOf { it.toDouble() }
         val sumY = values.sum()
-        val sumXY = values.mapIndexed { index, value -> index * value }.sum()
-        val sumX2 = (0 until n).sumOf { it * it }
+        val sumXY = values.mapIndexed { index, value -> index.toDouble() * value }.sum()
+        val sumX2 = values.indices.sumOf { it.toDouble() * it.toDouble() }
         
-        return (n * sumXY - sumX * sumY).toDouble() / (n * sumX2 - sumX * sumX)
+        return (n * sumXY - sumX * sumY).toDouble() / (n * sumX2 - sumX * sumX).toDouble()
     }
     
     data class SavingsTrend(
         val nextMonthPrediction: Int,
         val confidence: Double,
         val factors: List<String>
-    )
-    
-    data class LoanRiskAnalysis(
-        val riskPercentage: Int,
-        val confidence: Double,
-        val riskFactors: List<String>
-    )
-    
-    data class MemberGrowthPrediction(
-        val expectedNewMembers: Int,
-        val confidence: Double,
-        val growthFactors: List<String>
     )
 }

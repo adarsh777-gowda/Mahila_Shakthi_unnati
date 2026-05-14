@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -53,6 +54,10 @@ kotlin {
     jvmToolchain(11)
 }
 
+hilt {
+    enableAggregatingTask = true
+}
+
 dependencies {
     // 🔥 Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
@@ -73,6 +78,9 @@ dependencies {
 
     // 📱 Core & Lifecycle
     implementation(libs.androidx.core.ktx)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")

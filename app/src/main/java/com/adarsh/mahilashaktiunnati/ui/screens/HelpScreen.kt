@@ -2,7 +2,9 @@ package com.adarsh.mahilashaktiunnati.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -13,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adarsh.mahilashaktiunnati.R
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 
 @Composable
@@ -43,9 +45,16 @@ fun HelpScreen(
                     )
                 )
             )
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Language Selector
+        LanguageSelector(
+            context = context,
+            onLanguageChanged = onLanguageChanged
+        )
+
         // Header
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -70,7 +79,7 @@ fun HelpScreen(
             }
         }
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         
         Text(
             text = stringResource(R.string.help_description),
@@ -78,17 +87,17 @@ fun HelpScreen(
             fontWeight = FontWeight.Bold,
             color = Color(0xFF424242),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         )
         Text(
-            text = "ನಮ್ಮ ಸಹಾಯ ರ್ಹಣ ಮಾರ್ಹಣ",
+            text = "ನಮ್ಮ ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಸ್ವಾಗತ",
             style = MaterialTheme.typography.bodyLarge,
             color = Color(0xFF616161),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         )
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         
         // Help Categories
         val helpCategories = listOf(
@@ -125,12 +134,12 @@ fun HelpScreen(
             HelpCategory(
                 icon = "🤖",
                 title = "AI ಸಹಾಯ",
-                description = "AI ಮಾರ್ಹಣ ಸಹಾಯ",
+                description = "AI ಮಾರ್ಗದರ್ಶನ ಸಹಾಯ",
                 questions = listOf(
-                    "ನನಿಮ ಉಳಿಳಿ ಹೇಗೆ ಮಾಡಿದಿದಿ ಎಷ್ಟ ಮಾಡಿದಿ?",
-                    "ಸಂಘಟನ ಬೆಳವಹಣ ಹೇಗೆ ಮಾಡಿದಿದಿ ಎಷ್ಟ?",
-                    "ಹಣಗಳು ಸಂಘಟನ ಮಾಡಿದಿದಿ ಎಷ್ಟ?",
-                    "ಸಾಣ ನಿರ್ವಹಣ ಹೇಗೆ ಮಾಡಿದಿದಿ?"
+                    "ನಿಮ್ಮ ಉಳಿತಾಯದ ಟ್ರೆಂಡ್ ಅನ್ನು ಹೇಗೆ ನೋಡುವುದು?",
+                    "ಸಾಲದ ಅರ್ಹತೆಯನ್ನು ಹೇಗೆ ತಿಳಿಯುವುದು?",
+                    "AI ಸಹಾಯಕನೊಂದಿಗೆ ಹೇಗೆ ಮಾತನಾಡುವುದು?",
+                    "ವರದಿಗಳನ್ನು ಹೇಗೆ ರಚಿಸುವುದು?"
                 )
             )
         )
@@ -144,7 +153,7 @@ fun HelpScreen(
                     containerColor = cardBackground
                 ),
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp
+                    defaultElevation = 4.dp
                 )
             ) {
                 Column(
@@ -193,18 +202,19 @@ fun HelpScreen(
             }
         }
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         
         // Quick Help Buttons
         Text(
-            text = "ತ್ವರ ಸಹಾಯ",
+            text = "ತ್ವರಿತ ಸಹಾಯ",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF424242),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -220,8 +230,8 @@ fun HelpScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    "📞 ಸಹಾಯ ಕರೆ",
-                    style = MaterialTheme.typography.titleMedium,
+                    "📞 ಕರೆ ಮಾಡಿ",
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -236,8 +246,8 @@ fun HelpScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    "📹 ವೀಡಿಯ ಟ್ಯೋರಿಲ್",
-                    style = MaterialTheme.typography.titleMedium,
+                    "📹 ವಿಡಿಯೋ",
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
             }

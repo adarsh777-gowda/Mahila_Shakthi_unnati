@@ -1,6 +1,7 @@
 package com.adarsh.mahilashaktiunnati.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,12 +21,14 @@ fun AppNavGraph(
     onLogout: () -> Unit = {}
 ) {
     val navController = rememberNavController()
+    val context = LocalContext.current
     val aiViewModel = androidx.lifecycle.viewmodel.compose.viewModel<AIViewModel>()
     val start = if (isLoggedIn) Routes.Home else Routes.Login
 
     NavHost(navController = navController, startDestination = start) {
         composable(Routes.Login) {
             ProfessionalLoginScreen(
+                context = context,
                 viewModel = authViewModel,
                 onLoginSuccess = {
                     navController.navigate(Routes.Home) {
@@ -40,6 +43,8 @@ fun AppNavGraph(
 
         composable(Routes.Register) {
             ProfessionalRegisterScreen(
+                context = context,
+                viewModel = authViewModel,
                 onRegisterSuccess = {
                     navController.navigate(Routes.Home) {
                         popUpTo(Routes.Register) { inclusive = true }
@@ -55,6 +60,7 @@ fun AppNavGraph(
 
         composable(Routes.Report) {
             ReportScreen(
+                context = context,
                 onBack = {
                     navController.navigateUp()
                 }
@@ -63,6 +69,7 @@ fun AppNavGraph(
 
         composable(Routes.Help) {
             HelpScreen(
+                context = context,
                 onBack = {
                     navController.navigateUp()
                 }
@@ -71,6 +78,7 @@ fun AppNavGraph(
 
         composable(Routes.Home) {
             ProfessionalHomeScreen(
+                context = context,
                 viewModel = memberViewModel,
                 onNavigateToMembers = {
                     navController.navigate(Routes.Dashboard)
@@ -108,6 +116,7 @@ fun AppNavGraph(
 
         composable(Routes.Dashboard) {
             DashboardScreen(
+                context = context,
                 viewModel = memberViewModel,
                 isOffline = isOffline,
                 onMemberSelected = { memberId ->
@@ -132,6 +141,7 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val memberId = backStackEntry.arguments?.getInt("memberId") ?: return@composable
             MemberDetailScreen(
+                context = context,
                 memberId = memberId,
                 viewModel = memberViewModel,
                 onBack = { navController.popBackStack() }
@@ -140,6 +150,7 @@ fun AppNavGraph(
 
         composable(Routes.AIAssistant) {
             AIAssistantScreen(
+                context = context,
                 aiViewModel = aiViewModel,
                 memberViewModel = memberViewModel,
                 onBack = { navController.popBackStack() }
@@ -148,6 +159,7 @@ fun AppNavGraph(
 
         composable(Routes.PracticalFeatures) {
             PracticalFeaturesScreen(
+                context = context,
                 viewModel = memberViewModel,
                 onBack = { navController.popBackStack() }
             )

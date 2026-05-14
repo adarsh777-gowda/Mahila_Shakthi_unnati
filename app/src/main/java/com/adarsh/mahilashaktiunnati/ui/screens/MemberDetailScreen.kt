@@ -2,45 +2,27 @@ package com.adarsh.mahilashaktiunnati.ui.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.adarsh.mahilashaktiunnati.R
 import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
-import com.adarsh.mahilashaktiunnati.data.entities.Loan
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
-import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 import coil.compose.AsyncImage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberDetailScreen(
     context: android.content.Context,
@@ -149,7 +131,13 @@ fun MemberDetailScreen(
             .padding(16.dp)
     ) {
         item {
-            Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("Back") }
+            Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Back")
+                }
+            }
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
@@ -160,15 +148,17 @@ fun MemberDetailScreen(
 
             val m = member
             if (m != null) {
-                if (editName.isBlank()) editName = m.name
-                if (editPhone.isBlank()) editPhone = m.phone
-                if (editPhoto == null) editPhoto = m.photoUri
+                LaunchedEffect(m) {
+                    if (editName.isBlank()) editName = m.name
+                    if (editPhone.isBlank()) editPhone = m.phone
+                    if (editPhoto == null) editPhoto = m.photoUri
+                }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AsyncImage(
                         model = editPhoto,
                         contentDescription = "Member photo",
-                        modifier = Modifier.height(72.dp)
+                        modifier = Modifier.size(72.dp)
                     )
                     Column(modifier = Modifier.weight(1f)) {
                         OutlinedTextField(
@@ -193,14 +183,14 @@ fun MemberDetailScreen(
                     ) { Text("Pick Photo") }
                     Button(
                         onClick = { 
-                        member?.let { 
-                            viewModel.updateMember(it.copy(
-                                name = editName.trim(),
-                                phone = editPhone.trim(),
-                                photoUri = editPhoto
-                            ))
-                        }
-                    },
+                            member?.let { 
+                                viewModel.updateMember(it.copy(
+                                    name = editName.trim(),
+                                    phone = editPhone.trim(),
+                                    photoUri = editPhoto
+                                ))
+                            }
+                        },
                         modifier = Modifier.weight(1f)
                     ) { Text("Save") }
                 }
@@ -208,6 +198,12 @@ fun MemberDetailScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { showDeleteMember = true }, modifier = Modifier.fillMaxWidth()) {
                     Text("Delete Member")
+                }
+                Button(
+                    onClick = { viewModel.shareWhatsAppSummary(context, m) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Share WhatsApp Summary")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -243,9 +239,14 @@ fun MemberDetailScreen(
             }
             Button(
                 onClick = {
-                    val amt = amount.toIntOrNull()
+                    val amt = amount.toLongOrNull()
                     if (amt != null && week.isNotBlank()) {
-                        viewModel.addSavings(memberId, amt.toLong(), System.currentTimeMillis())
+                        viewModel.addSavings(
+                            memberId = memberId,
+                            amount = amt,
+                            week = week.trim(),
+                            status = status
+                        )
                         amount = ""
                         week = ""
                         status = "Paid"
@@ -263,12 +264,20 @@ fun MemberDetailScreen(
             Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                 Row(
                     modifier = Modifier.padding(12.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("₹${s.amount}")
-                    Text(s.week)
+                    Column {
+                        Text("₹${s.amount}", style = MaterialTheme.typography.bodyLarge)
+                        Text(s.week, style = MaterialTheme.typography.bodySmall)
+                    }
                     Text(s.status)
-                    Button(onClick = { deleteSavingId = s.id }) { Text("Delete") }
+                    IconButton(onClick = { deleteSavingId = s.id }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.delete_savings_entry)
+                        )
+                    }
                 }
             }
         }
@@ -291,7 +300,8 @@ fun MemberDetailScreen(
                 value = loanDate,
                 onValueChange = { loanDate = it },
                 label = { Text("Date") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                readOnly = true
             )
 
             Button(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
@@ -300,9 +310,9 @@ fun MemberDetailScreen(
 
             Button(
                 onClick = {
-                    val amt = loanAmount.toIntOrNull()
+                    val amt = loanAmount.toLongOrNull()
                     if (amt != null && loanDate.isNotBlank()) {
-                        viewModel.addLoan(memberId, amt.toLong(), System.currentTimeMillis(), System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000))
+                        viewModel.addLoan(memberId, amt, System.currentTimeMillis(), System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000))
                         loanAmount = ""
                         loanDate = ""
                     }
@@ -340,7 +350,9 @@ fun MemberDetailScreen(
                         onClick = { deleteLoanId = loan.id },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
-                        Text("Delete Loan")
+                        Icon(Icons.Default.Delete, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.delete_loan_entry))
                     }
                 }
             }
@@ -358,7 +370,7 @@ private fun LoanDatePickerDialog(
     onDismiss: () -> Unit,
     onDateSelected: (String) -> Unit
 ) {
-    val state = androidx.compose.material3.rememberDatePickerState()
+    val state = rememberDatePickerState()
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -373,4 +385,3 @@ private fun LoanDatePickerDialog(
         DatePicker(state = state)
     }
 }
-

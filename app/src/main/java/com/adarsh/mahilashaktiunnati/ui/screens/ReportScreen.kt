@@ -16,17 +16,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adarsh.mahilashaktiunnati.R
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
     context: android.content.Context,
@@ -36,19 +37,12 @@ fun ReportScreen(
     var selectedReportType by remember { mutableStateOf("members") }
     var isGeneratingReport by remember { mutableStateOf(false) }
     
-    // Professional color scheme
-    val primaryGradient = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFFE91E63), // Pink
-            Color(0xFF9C27B0)  // Purple
-        )
-    )
-    val cardBackground = Color(0xFFF8F9FA)
     val accentColor = Color(0xFFE91E63)
     val successColor = Color(0xFF4CAF50)
     val infoColor = Color(0xFF2196F3)
+    val cardBackground = Color(0xFFF8F9FA)
     
-    val context = LocalContext.current
+    val localContext = LocalContext.current
     
     Column(
         modifier = Modifier
@@ -64,6 +58,12 @@ fun ReportScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Language Selector
+        LanguageSelector(
+            context = context,
+            onLanguageChanged = onLanguageChanged
+        )
+
         // Header
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -82,9 +82,9 @@ fun ReportScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
+                    contentDescription = stringResource(R.string.back),
+                    tint = Color(0xFF880E4F)
                 )
-                tint = Color(0xFF880E4F)
             }
         }
         
@@ -92,7 +92,7 @@ fun ReportScreen(
         
         // Report Type Selection
         Text(
-            text = "ವರ್ಪೋರ್ಟ ಆಯ್ದಿ",
+            text = "ವರದಿ ಆಯ್ಕೆಮಾಡಿ",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF424242)
@@ -106,16 +106,16 @@ fun ReportScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val reportTypes = listOf(
-                "members" to stringResource(R.string.members),
-                "savings" to stringResource(R.string.savings),
-                "loans" to stringResource(R.string.loans),
-                "meetings" to stringResource(R.string.meetings)
+                "members" to R.string.members,
+                "savings" to R.string.savings,
+                "loans" to R.string.loans,
+                "meetings" to R.string.meetings_tab
             )
             
-            reportTypes.forEach { (type, label) ->
+            reportTypes.forEach { (type, labelRes) ->
                 FilterChip(
                     onClick = { selectedReportType = type },
-                    label = { Text(stringResource(label)) },
+                    label = { Text(stringResource(labelRes)) },
                     selected = selectedReportType == type,
                     modifier = Modifier.weight(1f),
                     colors = FilterChipDefaults.filterChipColors(
@@ -162,7 +162,7 @@ fun ReportScreen(
                 Button(
                     onClick = { 
                         isGeneratingReport = true
-                        // Simple simulation without coroutines
+                        // Simple simulation
                         isGeneratingReport = false
                     },
                     enabled = !isGeneratingReport,
@@ -191,7 +191,7 @@ fun ReportScreen(
                         )
                     } else {
                         Text(
-                            "ವರ್ಪೋರ್ಟ ಉತ್ಪಾಿದಲ್ಲ",
+                            "ವರದಿ ತಯಾರಿಸಿ",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium
                         )
@@ -209,7 +209,7 @@ fun ReportScreen(
         ) {
             Button(
                 onClick = { 
-                    shareReportViaWhatsApp(context, selectedReportType)
+                    shareReportViaWhatsApp(localContext, selectedReportType)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -222,14 +222,14 @@ fun ReportScreen(
             ) {
                 Text(
                     stringResource(R.string.share_whatsapp),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
             }
             
             Button(
                 onClick = { 
-                    downloadReport(context, selectedReportType)
+                    downloadReport(localContext, selectedReportType)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -242,7 +242,7 @@ fun ReportScreen(
             ) {
                 Text(
                     stringResource(R.string.download_report),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -270,7 +270,7 @@ private fun shareReportViaWhatsApp(context: Context, reportType: String) {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, reportText)
             }
-            context.startActivity(Intent.createChooser(shareIntent, "ವರ್ಪೋರ್ಟ ಹಂಟಿ"))
+            context.startActivity(Intent.createChooser(shareIntent, "ವರದಿ ಹಂಚಿಕೊಳ್ಳಿ"))
         }
     } catch (e: Exception) {
         // Handle error
@@ -289,9 +289,6 @@ private fun downloadReport(context: Context, reportType: String) {
         
         val reportFile = File(downloadsDir, fileName)
         reportFile.writeText(formatReportForDownload(reportData, reportType))
-        
-        // Show success message
-        // In a real app, you would show a snackbar or toast
     } catch (e: Exception) {
         // Handle error
     }
@@ -334,120 +331,50 @@ private fun generateMockReportData(reportType: String): Map<String, Any> {
 private fun formatReportForWhatsApp(reportData: Map<String, Any>, reportType: String): String {
     return when (reportType) {
         "members" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸದಸ್ಯರು ವರ್ಪೋರ್ಟ
+            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸದಸ್ಯರ ವರದಿ
             
-            📊 ಒಟ್ಟಲ ಸದಸ್ಯರು: ${reportData["totalMembers"]}
+            📊 ಒಟ್ಟು ಸದಸ್ಯರು: ${reportData["totalMembers"]}
             ✅ ಸಕ್ರಿಯ ಸದಸ್ಯರು: ${reportData["activeMembers"]}
             🆕 ಹೊಸ ಸದಸ್ಯರು: ${reportData["newMembers"]}
             
-            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 👇
+            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "savings" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಉಳಿಳಿ ವರ್ಪೋರ್ಟ
+            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಉಳಿತಾಯ ವರದಿ
             
-            💰 ಒಟ್ಟಲ ಉಳಿಳಿ: ₹${reportData["totalSavings"]}
-            📈 ಮಾಸಿಶ ಉಳಿಳಿ: ₹${reportData["monthlySavings"]}
-            📊 ಬೆಳವಹಣ ದರ: ${reportData["growthRate"]}%
+            💰 ಒಟ್ಟು ಉಳಿತಾಯ: ₹${reportData["totalSavings"]}
+            📈 ಮಾಸಿಕ ಉಳಿತಾಯ: ₹${reportData["monthlySavings"]}
+            📊 ಬೆಳವಣಿಗೆ ದರ: ${reportData["growthRate"]}%
             
-            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 💰
+            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "loans" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಾಣಗಳು ವರ್ಪೋರ್ಟ
+            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸಾಲಗಳ ವರದಿ
             
-            💳 ಒಟ್ಟಲ ಸಾಣಗಳು: ${reportData["totalLoans"]}
-            ✅ ಸಕ್ರಿಯ ಸಾಣಗಳು: ${reportData["activeLoans"]}
-            ⏳ ಬಾಕಿ ಸಾಣಗಳು: ${reportData["pendingLoans"]}
-            💰 ಒಟ್ಟಲ ಮೊತ: ₹${reportData["totalAmount"]}
+            💳 ಒಟ್ಟು ಸಾಲಗಳು: ${reportData["totalLoans"]}
+            ✅ ಸಕ್ರಿಯ ಸಾಲಗಳು: ${reportData["activeLoans"]}
+            ⏳ ಬಾಕಿ ಸಾಲಗಳು: ${reportData["pendingLoans"]}
+            💰 ಒಟ್ಟು ಮೊತ್ತ: ₹${reportData["totalAmount"]}
             
-            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 💳
+            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "meetings" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಭೆತಗಳು ವರ್ಪೋರ್ಟ
+            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸಭೆಗಳ ವರದಿ
             
-            📊 ಒಟ್ಟಲ ಸಭೆತಗಳು: ${reportData["totalMeetings"]}
-            ✅ ಹಾಗಿದ ಸಭೆತಗಳು: ${reportData["attendedMeetings"]}
-            📅 ಬಾಕಿ ಸಭೆತಗಳು: ${reportData["upcomingMeetings"]}
+            📊 ಒಟ್ಟು ಸಭೆಗಳು: ${reportData["totalMeetings"]}
+            ✅ ನಡೆದ ಸಭೆಗಳು: ${reportData["attendedMeetings"]}
+            📅 ಬಾಕಿ ಸಭೆಗಳು: ${reportData["upcomingMeetings"]}
             
-            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 📅
+            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
         """.trimIndent()
         
-        else -> "ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ. 💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ."
+        else -> "ವರದಿ ಲಭ್ಯವಿದೆ. 💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ."
     }
 }
 
 private fun formatReportForDownload(reportData: Map<String, Any>, reportType: String): String {
-    return when (reportType) {
-        "members" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸದಸ್ಯರು ವರ್ಪೋರ್ಟ
-            ================================================
-            
-            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            📊 ಒಟ್ಟಲ ಸದಸ್ಯರು: ${reportData["totalMembers"]}
-            ✅ ಸಕ್ರಿಯ ಸದಸ್ಯರು: ${reportData["activeMembers"]}
-            🆕 ಹೊಸ ಸದಸ್ಯರು: ${reportData["newMembers"]}
-            
-            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
-        """.trimIndent()
-        
-        "savings" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಉಳಿಳಿ ವರ್ಪೋರ್ಟ
-            ================================================
-            
-            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            💰 ಒಟ್ಟಲ ಉಳಿಳಿ: ₹${reportData["totalSavings"]}
-            📈 ಮಾಸಿಶ ಉಳಿಳಿ: ₹${reportData["monthlySavings"]}
-            📊 ಬೆಳವಹಣ ದರ: ${reportData["growthRate"]}%
-            
-            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
-        """.trimIndent()
-        
-        "loans" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಾಣಗಳು ವರ್ಪೋರ್ಟ
-            ================================================
-            
-            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            💳 ಒಟ್ಟಲ ಸಾಣಗಳು: ${reportData["totalLoans"]}
-            ✅ ಸಕ್ರಿಯ ಸಾಣಗಳು: ${reportData["activeLoans"]}
-            ⏳ ಬಾಕಿ ಸಾಣಗಳು: ${reportData["pendingLoans"]}
-            💰 ಒಟ್ಟಲ ಮೊತ: ₹${reportData["totalAmount"]}
-            
-            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
-        """.trimIndent()
-        
-        "meetings" -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಭೆತಗಳು ವರ್ಪೋರ್ಟ
-            ================================================
-            
-            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            📊 ಒಟ್ಟಲ ಸಭೆತಗಳು: ${reportData["totalMeetings"]}
-            ✅ ಹಾಗಿದ ಸಭೆತಗಳು: ${reportData["attendedMeetings"]}
-            📅 ಬಾಕಿ ಸಭೆತಗಳು: ${reportData["upcomingMeetings"]}
-            
-            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
-        """.trimIndent()
-        
-        else -> """
-            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ
-            ================================================
-            
-            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
-            
-            ಸಂದೇಶ: ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ
-        """.trimIndent()
-    }
+    return formatReportForWhatsApp(reportData, reportType)
 }

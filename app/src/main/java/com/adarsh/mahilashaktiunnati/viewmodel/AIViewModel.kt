@@ -38,7 +38,7 @@ class AIViewModel : ViewModel() {
             _isAnalyzing.value = true
             try {
                 val newInsights = aiService.analyzeFinancialData(members, savings, loans)
-                val newPredictions = aiService.generatePredictiveAnalysis(members, savings, loans)
+                val newPredictions = aiService.generatePredictiveAnalysis(savings, loans)
                 
                 _insights.value = newInsights
                 _predictions.value = newPredictions

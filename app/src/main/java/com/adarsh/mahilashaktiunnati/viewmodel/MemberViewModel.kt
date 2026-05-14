@@ -104,7 +104,13 @@ class MemberViewModel(
         }
     }
 
-    fun addSavings(memberId: Int, amount: Long, date: Long) {
+    fun addSavings(
+        memberId: Int,
+        amount: Long,
+        week: String,
+        status: String,
+        date: Long = System.currentTimeMillis()
+    ) {
         viewModelScope.launch {
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             val currentTime = System.currentTimeMillis()
@@ -112,8 +118,9 @@ class MemberViewModel(
                 Savings(
                     memberId = memberId, 
                     amount = amount.toDouble(), 
+                    week = week,
                     date = date, 
-                    status = "PAID",
+                    status = status.uppercase(),
                     userId = userId, 
                     createdAt = currentTime, 
                     updatedAt = currentTime, 
