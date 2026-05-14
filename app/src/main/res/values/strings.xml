@@ -1,0 +1,222 @@
+<resources>
+    <string name="app_name">MahilaShaktiUnnati</string>
+    
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="submit">Submit</string>
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
+    <!-- Authentication -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_success">Login Successful</string>
+    <string name="register_success">Registration Successful</string>
+    <string name="invalid_credentials">Invalid phone number or password</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="members">Members</string>
+    <string name="savings">Savings</string>
+    <string name="loans">Loans</string>
+    <string name="reports">Reports</string>
+    <string name="ai_assistant">AI Assistant</string>
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="language">Language</string>
+    
+    <!-- Member related -->
+    <string name="member_name">Member Name</string>
+    <string name="member_phone">Phone Number</string>
+    <string name="member_id">Member ID</string>
+    <string name="add_member">Add Member</string>
+    <string name="edit_member">Edit Member</string>
+    <string name="delete_member">Delete Member</string>
+    <string name="member_details">Member Details</string>
+    <string name="total_members">Total Members</string>
+    <string name="active_members">Active Members</string>
+    
+    <!-- Savings related -->
+    <string name="savings_amount">Savings Amount</string>
+    <string name="add_savings">Add Savings</string>
+    <string name="total_savings">Total Savings</string>
+    <string name="weekly_savings">Weekly Savings</string>
+    <string name="monthly_savings">Monthly Savings</string>
+    <string name="savings_history">Savings History</string>
+    
+    <!-- Loan related -->
+    <string name="loan_amount">Loan Amount</string>
+    <string name="loan_interest">Interest Rate</string>
+    <string name="loan_date">Loan Date</string>
+    <string name="loan_due_date">Due Date</string>
+    <string name="add_loan">Add Loan</string>
+    <string name="total_loans">Total Loans</string>
+    <string name="active_loans">Active Loans</string>
+    <string name="loan_status">Loan Status</string>
+    <string name="paid">Paid</string>
+    <string name="pending">Pending</string>
+    
+    <!-- Dashboard -->
+    <string name="overview">Overview</string>
+    <string name="statistics">Statistics</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="financial_summary">Financial Summary</string>
+    
+    <!-- AI Assistant -->
+    <string name="ask_ai">Ask AI</string>
+    <string name="type_message">Type your message...</string>
+    <string name="send">Send</string>
+    <string name="ai_insights">AI Insights</string>
+    <string name="financial_advice">Financial Advice</string>
+    
+    <!-- Reports -->
+    <string name="generate_report">Generate Report</string>
+    <string name="export_pdf">Export PDF</string>
+    <string name="share_report">Share Report</string>
+    <string name="weekly_report">Weekly Report</string>
+    <string name="monthly_report">Monthly Report</string>
+    
+    <!-- Language Selection -->
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="kannada">ಕನ್ನಡ (Kannada)</string>
+    <string name="language_changed">Language changed successfully</string>
+    <string name="login_subtitle">Women Empowerment Through Financial Independence</string>
+    <string name="login_method">Login Method</string>
+    <string name="phone_login">Phone Login</string>
+    <string name="password_login">Password Login</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="phone_not_registered">This number is not registered. Please register first.</string>
+    <string name="sending_otp">Sending OTP...</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="register_prompt">Don\'t have an account? Register now!</string>
+    <string name="welcome_admin">Welcome, Admin!</string>
+    <string name="members_description">View and manage members</string>
+    <string name="savings_description">View and manage savings</string>
+    <string name="loans_description">View and manage loans</string>
+    <string name="ai_description">Get AI assistance</string>
+    <string name="reports_description">View and generate reports</string>
+    <string name="help_description">Get help and support for your women\'s self-help group</string>
+    <string name="syncing">Syncing...</string>
+    <string name="sync_completed">Sync completed</string>
+    <string name="sync_failed">Sync failed: %s</string>
+    <string name="delete_member_confirm">Delete member?</string>
+    <string name="delete_member_confirmation">This will remove the member from your lists. You can sync to update cloud backup too.</string>
+    <string name="delete_savings_entry">Delete savings entry?</string>
+    <string name="delete_loan_entry">Delete loan entry?</string>
+    <string name="delete_savings_confirmation">This will remove the savings entry from your records.</string>
+    <string name="delete_loan_confirmation">This will remove the loan entry from your records.</string>
+    <string name="search_members_hint">Search members by name or phone...</string>
+    <string name="no_members_found">No members found. Add your first member to get started!</string>
+    <string name="no_members_found_for_query">No members found for \"%s\"</string>
+    <string name="enter_username_hint">Enter username</string>
+    <string name="enter_phone_hint">Enter phone number</string>
+    <string name="otp_sent">OTP sent successfully</string>
+    <string name="invalid_phone">Invalid phone number</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="passwords_not_match">Passwords do not match</string>
+    <string name="registration_success">Registration Successful</string>
+    <string name="username">Username</string>
+    <string name="analyze_savings_trends">Analyze my savings trends</string>
+    <string name="assess_loan_risks">Assess loan risks</string>
+    <string name="analyze_all_data">Analyze All Data</string>
+    <string name="clear_chat">Clear Chat</string>
+    <string name="generate_members_report">Generate Members Report</string>
+    <string name="generate_savings_report">Generate Savings Report</string>
+    <string name="generate_loans_report">Generate Loans Report</string>
+    <string name="generate_meetings_report">Generate Meetings Report</string>
+    <string name="generate_general_report">Generate General Report</string>
+    <string name="generating_report">Generating Report...</string>
+    <string name="share_whatsapp">Share WhatsApp</string>
+    <string name="download_report">Download Report</string>
+    <string name="advanced_features">Advanced Features</string>
+    <string name="production_tools_description">Production-ready tools for women\'s self-help groups</string>
+    <string name="voice_recording">Voice Recording</string>
+    <string name="voice_recording_tab">Voice Recording</string>
+    <string name="biometrics">Biometrics</string>
+    <string name="biometrics_tab">Biometrics</string>
+    <string name="qr_attendance">QR Attendance</string>
+    <string name="qr_attendance_tab">QR Attendance</string>
+    <string name="loan_reminders">Loan Reminders</string>
+    <string name="loan_reminders_tab">Loan Reminders</string>
+    <string name="multi_language">Multi-Language</string>
+    <string name="multi_language_tab">Multi-Language</string>
+    <string name="emergency_backup">Emergency Backup</string>
+    <string name="emergency_backup_tab">Emergency Backup</string>
+    <string name="voice_recording_description">Record meeting minutes with voice recognition</string>
+    <string name="biometrics_description">Secure app access with fingerprint/face ID</string>
+    <string name="qr_attendance_description">Track member attendance with QR codes</string>
+    <string name="loan_reminders_description">Automated loan repayment notifications</string>
+    <string name="multi_language_description">Voice commands in regional languages</string>
+    <string name="emergency_backup_description">Cloud backup for critical data</string>
+    <string name="back_to_dashboard">Back to Dashboard</string>
+    <string name="help">Help &amp; Support</string>
+    <string name="loan_management">Loan Management</string>
+    <string name="loan_management_description">Manage loans, track repayments, and view loan history</string>
+    <string name="loan_question_1">How do I apply for a new loan?</string>
+    <string name="loan_question_2">What are the current interest rates?</string>
+    <string name="loan_question_3">How do I check my loan balance?</string>
+    <string name="savings_management">Savings Management</string>
+    <string name="savings_management_description">Track savings, set goals, and monitor financial progress</string>
+    <string name="savings_question_1">How do I start saving regularly?</string>
+    <string name="savings_question_2">What are the best saving practices?</string>
+    <string name="savings_question_3">How do I calculate interest on my savings?</string>
+    <string name="technical_support">Technical Support</string>
+    <string name="technical_support_description">Get technical help and app support</string>
+    <string name="technical_question_1">How do I reset my password?</string>
+    <string name="technical_question_2">Why is the app not working?</string>
+    <string name="technical_question_3">How do I contact customer support?</string>
+    <string name="ai_assistance">AI Assistance</string>
+    <string name="ai_assistance_description">Get AI help for financial guidance</string>
+    <string name="ai_question_1">How can AI help me with my finances?</string>
+    <string name="ai_question_2">What financial insights can AI provide?</string>
+    <string name="ai_question_3">How do I use AI features effectively?</string>
+    <string name="practical_features">Practical Features</string>
+    <string name="essential_tools_description">Essential tools for women\'s self-help groups</string>
+    <string name="compliance">Compliance</string>
+    <string name="compliance_tab">Compliance</string>
+    <string name="loan_eligibility">Loan Eligibility</string>
+    <string name="loan_eligibility_tab">Loan Eligibility</string>
+    <string name="meetings">Meetings</string>
+    <string name="meetings_tab">Meetings</string>
+    <string name="sms">SMS</string>
+    <string name="sms_tab">SMS</string>
+    <string name="emergency">Emergency</string>
+    <string name="emergency_tab">Emergency</string>
+    <string name="financial">Financial</string>
+    <string name="financial_tab">Financial</string>
+    <string name="vernacular">Vernacular</string>
+    <string name="vernacular_tab">Vernacular</string>
+    <string name="compliance_description">Calculate group compliance with regulatory requirements</string>
+    <string name="loan_eligibility_description">Check loan eligibility based on savings patterns</string>
+    <string name="meetings_description">Generate meeting reminders and schedules</string>
+    <string name="sms_description">Create SMS reminders for members</string>
+    <string name="emergency_description">Manage emergency contact lists</string>
+    <string name="financial_description">Track financial literacy metrics</string>
+    <string name="vernacular_description">Generate content in local languages</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="number_not_registered">This number is not registered. Please register first.</string>
+    <string name="enter_both_credentials">Please enter both phone number and password</string>
+    <string name="invalid_username">Invalid username</string>
+    <string name="full_name">Full Name</string>
+    <string name="otp">OTP</string>
+</resources>

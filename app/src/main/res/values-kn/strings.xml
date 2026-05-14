@@ -1,0 +1,103 @@
+<resources>
+    <string name="app_name">ಮಹಿಳಾಶಕ್ತಿ ಉನ್ನತಿ</string>
+    
+    <!-- Common -->
+    <string name="ok">ಸರಿ</string>
+    <string name="cancel">ರದ್ದು</string>
+    <string name="save">ಉಳಿಸಿ</string>
+    <string name="delete">ಅಳಿಸಿ</string>
+    <string name="edit">ಸಂಪಾದಿಸಿ</string>
+    <string name="add">ಸೇರಿಸಿ</string>
+    <string name="search">ಹುಡುಕಿ</string>
+    <string name="back">ಹಿಂದೆ</string>
+    <string name="next">ಮುಂದೆ</string>
+    <string name="submit">ಸಲ್ಲಿಸಿ</string>
+    <string name="loading">ಲೋಡ್ ಆಗುತ್ತಿದೆ...</string>
+    <string name="error">ದೋಷ</string>
+    <string name="success">ಯಶಸ್ವಿ</string>
+    <string name="confirm">ಖಚಿತಪಡಿಸಿ</string>
+    <string name="yes">ಹೌದು</string>
+    <string name="no">ಇಲ್ಲ</string>
+    
+    <!-- Authentication -->
+    <string name="login">ಲಾಗಿನ್</string>
+    <string name="register">ನೋಂದಣಿ</string>
+    <string name="logout">ಲಾಗ್ಔಟ್</string>
+    <string name="email">ಇಮೇಲ್</string>
+    <string name="password">ಪಾಸ್ವರ್ಡ್</string>
+    <string name="confirm_password">ಪಾಸ್ವರ್ಡ್ ದೃಢೀಕರಿಸಿ</string>
+    <string name="forgot_password">ಪಾಸ್ವರ್ಡ್ ಮರೆತಿರಾ?</string>
+    <string name="login_success">ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="register_success">ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="invalid_credentials">ಅಮಾನ್ಯ ರುಜುವಾತುಗಳು</string>
+    <string name="password_mismatch">ಪಾಸ್ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ</string>
+    
+    <!-- Navigation -->
+    <string name="home">ಮುಖಪುಟ</string>
+    <string name="dashboard">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</string>
+    <string name="members">ಸದಸ್ಯರು</string>
+    <string name="savings">ಉಳಿತಾಯ</string>
+    <string name="loans">ಸಾಲಗಳು</string>
+    <string name="reports">ವರದಿಗಳು</string>
+    <string name="ai_assistant">AI ಸಹಾಯಕ</string>
+    <string name="settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
+    <string name="profile">ಪ್ರೊಫೈಲ್</string>
+    <string name="language">ಭಾಷೆ</string>
+    
+    <!-- Member related -->
+    <string name="member_name">ಸದಸ್ಯರ ಹೆಸರು</string>
+    <string name="member_phone">ದೂರವಾಣಿ ಸಂಖ್ಯೆ</string>
+    <string name="member_id">ಸದಸ್ಯ ID</string>
+    <string name="add_member">ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ</string>
+    <string name="edit_member">ಸದಸ್ಯರನ್ನು ಸಂಪಾದಿಸಿ</string>
+    <string name="delete_member">ಸದಸ್ಯರನ್ನು ಅಳಿಸಿ</string>
+    <string name="member_details">ಸದಸ್ಯರ ವಿವರಗಳು</string>
+    <string name="total_members">ಒಟ್ಟು ಸದಸ್ಯರು</string>
+    <string name="active_members">ಸಕ್ರಿಯ ಸದಸ್ಯರು</string>
+    
+    <!-- Savings related -->
+    <string name="savings_amount">ಉಳಿತಾಯ ಮೊತ್ತ</string>
+    <string name="add_savings">ಉಳಿತಾಯ ಸೇರಿಸಿ</string>
+    <string name="total_savings">ಒಟ್ಟು ಉಳಿತಾಯ</string>
+    <string name="weekly_savings">ವಾರಿಕ ಉಳಿತಾಯ</string>
+    <string name="monthly_savings">ಮಾಸಿಕ ಉಳಿತಾಯ</string>
+    <string name="savings_history">ಉಳಿತಾಯ ಇತಿಹಾಸ</string>
+    
+    <!-- Loan related -->
+    <string name="loan_amount">ಸಾಲದ ಮೊತ್ತ</string>
+    <string name="loan_interest">ಬಡ್ಡಿ ದರ</string>
+    <string name="loan_date">ಸಾಲದ ದಿನಾಂಕ</string>
+    <string name="loan_due_date">ಅಂತಿಮ ದಿನಾಂಕ</string>
+    <string name="add_loan">ಸಾಲ ಸೇರಿಸಿ</string>
+    <string name="total_loans">ಒಟ್ಟು ಸಾಲಗಳು</string>
+    <string name="active_loans">ಸಕ್ರಿಯ ಸಾಲಗಳು</string>
+    <string name="loan_status">ಸಾಲದ ಸ್ಥಿತಿ</string>
+    <string name="paid">ಪಾವತಿಸಲಾಗಿದೆ</string>
+    <string name="pending">ಬಾಕಿ ಇದೆ</string>
+    
+    <!-- Dashboard -->
+    <string name="overview">ಅವಲೋಕನ</string>
+    <string name="statistics">ಅಂಕಿಅಂಶಗಳು</string>
+    <string name="recent_activity">ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ</string>
+    <string name="financial_summary">ಹಣಕಾಸಿನ ಸಾರಾಂಶ</string>
+    
+    <!-- AI Assistant -->
+    <string name="ask_ai">AI ಗೆ ಕೇಳಿ</string>
+    <string name="type_message">ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ಟೈಪ್ ಮಾಡಿ...</string>
+    <string name="send">ಕಳುಹಿಸಿ</string>
+    <string name="ai_insights">AI ಒಳನೋಟಗಳು</string>
+    <string name="financial_advice">ಹಣಕಾಸಿನ ಸಲಹೆ</string>
+    
+    <!-- Reports -->
+    <string name="generate_report">ವರದಿಯನ್ನು ರಚಿಸಿ</string>
+    <string name="export_pdf">PDF ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿ</string>
+    <string name="share_report">ವರದಿಯನ್ನು ಹಂಚಿಸಿ</string>
+    <string name="weekly_report">ವಾರಿಕ ವರದಿ</string>
+    <string name="monthly_report">ಮಾಸಿಕ ವರದಿ</string>
+    
+    <!-- Language Selection -->
+    <string name="select_language">ಭಾಷೆಯನ್ನು ಆರಿಸಿ</string>
+    <string name="english">English</string>
+    <string name="kannada">ಕನ್ನಡ</string>
+    <string name="language_changed">ಭಾಷೆ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ</string>
+</resources>

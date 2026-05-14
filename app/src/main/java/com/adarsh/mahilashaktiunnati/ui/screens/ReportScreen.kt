@@ -1,0 +1,453 @@
+package com.adarsh.mahilashaktiunnati.ui.screens
+
+import android.content.Context
+import android.content.Intent
+import android.os.Environment
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.adarsh.mahilashaktiunnati.R
+import com.adarsh.mahilashaktiunnati.utils.LanguageManager
+import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
+@Composable
+fun ReportScreen(
+    context: android.content.Context,
+    onBack: () -> Unit,
+    onLanguageChanged: () -> Unit = {}
+) {
+    var selectedReportType by remember { mutableStateOf("members") }
+    var isGeneratingReport by remember { mutableStateOf(false) }
+    
+    // Professional color scheme
+    val primaryGradient = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFFE91E63), // Pink
+            Color(0xFF9C27B0)  // Purple
+        )
+    )
+    val cardBackground = Color(0xFFF8F9FA)
+    val accentColor = Color(0xFFE91E63)
+    val successColor = Color(0xFF4CAF50)
+    val infoColor = Color(0xFF2196F3)
+    
+    val context = LocalContext.current
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFCE4EC), // Light Pink
+                        Color(0xFFF3E5F5)  // Light Purple
+                    )
+                )
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Header
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.reports),
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF880E4F)
+            )
+            
+            IconButton(
+                onClick = onBack
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back)
+                )
+                tint = Color(0xFF880E4F)
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Report Type Selection
+        Text(
+            text = "ವರ್ಪೋರ್ಟ ಆಯ್ದಿ",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF424242)
+        )
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
+        // Report Type Chips
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val reportTypes = listOf(
+                "members" to stringResource(R.string.members),
+                "savings" to stringResource(R.string.savings),
+                "loans" to stringResource(R.string.loans),
+                "meetings" to stringResource(R.string.meetings)
+            )
+            
+            reportTypes.forEach { (type, label) ->
+                FilterChip(
+                    onClick = { selectedReportType = type },
+                    label = { Text(stringResource(label)) },
+                    selected = selectedReportType == type,
+                    modifier = Modifier.weight(1f),
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = accentColor,
+                        selectedLabelColor = Color.White
+                    )
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Generate Report Button
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp)),
+            colors = CardDefaults.cardColors(
+                containerColor = cardBackground
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = when (selectedReportType) {
+                        "members" -> stringResource(R.string.generate_members_report)
+                        "savings" -> stringResource(R.string.generate_savings_report)
+                        "loans" -> stringResource(R.string.generate_loans_report)
+                        "meetings" -> stringResource(R.string.generate_meetings_report)
+                        else -> stringResource(R.string.generate_general_report)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF424242),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Button(
+                    onClick = { 
+                        isGeneratingReport = true
+                        // Simple simulation without coroutines
+                        isGeneratingReport = false
+                    },
+                    enabled = !isGeneratingReport,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = accentColor,
+                        contentColor = Color.White,
+                        disabledContainerColor = Color(0xFFE0E0E0),
+                        disabledContentColor = Color(0xFF9E9E9E)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    if (isGeneratingReport) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.generating_report),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                    } else {
+                        Text(
+                            "ವರ್ಪೋರ್ಟ ಉತ್ಪಾಿದಲ್ಲ",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Action Buttons
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Button(
+                onClick = { 
+                    shareReportViaWhatsApp(context, selectedReportType)
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = successColor,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    stringResource(R.string.share_whatsapp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            
+            Button(
+                onClick = { 
+                    downloadReport(context, selectedReportType)
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = infoColor,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    stringResource(R.string.download_report),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+private fun shareReportViaWhatsApp(context: Context, reportType: String) {
+    try {
+        val reportData = generateMockReportData(reportType)
+        val reportText = formatReportForWhatsApp(reportData, reportType)
+        
+        val whatsappIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, reportText)
+            setPackage("com.whatsapp")
+        }
+        
+        if (whatsappIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(whatsappIntent)
+        } else {
+            // Fallback to regular share if WhatsApp is not installed
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, reportText)
+            }
+            context.startActivity(Intent.createChooser(shareIntent, "ವರ್ಪೋರ್ಟ ಹಂಟಿ"))
+        }
+    } catch (e: Exception) {
+        // Handle error
+    }
+}
+
+private fun downloadReport(context: Context, reportType: String) {
+    try {
+        val reportData = generateMockReportData(reportType)
+        val fileName = "${reportType}_report_${SimpleDateFormat("dd_MM_yyyy_HH_mm", Locale.getDefault()).format(Date())}.txt"
+        
+        val downloadsDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "MahilaShaktiReports")
+        if (!downloadsDir.exists()) {
+            downloadsDir.mkdirs()
+        }
+        
+        val reportFile = File(downloadsDir, fileName)
+        reportFile.writeText(formatReportForDownload(reportData, reportType))
+        
+        // Show success message
+        // In a real app, you would show a snackbar or toast
+    } catch (e: Exception) {
+        // Handle error
+    }
+}
+
+private fun generateMockReportData(reportType: String): Map<String, Any> {
+    return when (reportType) {
+        "members" -> mapOf(
+            "totalMembers" to 45,
+            "activeMembers" to 38,
+            "newMembers" to 7,
+            "generatedDate" to SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+        "savings" -> mapOf(
+            "totalSavings" to 250000,
+            "monthlySavings" to 15000,
+            "growthRate" to 12.5,
+            "generatedDate" to SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+        "loans" -> mapOf(
+            "totalLoans" to 12,
+            "activeLoans" to 8,
+            "pendingLoans" to 4,
+            "totalAmount" to 480000,
+            "generatedDate" to SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+        "meetings" -> mapOf(
+            "totalMeetings" to 24,
+            "attendedMeetings" to 20,
+            "upcomingMeetings" to 4,
+            "generatedDate" to SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+        else -> mapOf(
+            "message" to "Invalid report type",
+            "generatedDate" to SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+    }
+}
+
+private fun formatReportForWhatsApp(reportData: Map<String, Any>, reportType: String): String {
+    return when (reportType) {
+        "members" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸದಸ್ಯರು ವರ್ಪೋರ್ಟ
+            
+            📊 ಒಟ್ಟಲ ಸದಸ್ಯರು: ${reportData["totalMembers"]}
+            ✅ ಸಕ್ರಿಯ ಸದಸ್ಯರು: ${reportData["activeMembers"]}
+            🆕 ಹೊಸ ಸದಸ್ಯರು: ${reportData["newMembers"]}
+            
+            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 👇
+        """.trimIndent()
+        
+        "savings" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಉಳಿಳಿ ವರ್ಪೋರ್ಟ
+            
+            💰 ಒಟ್ಟಲ ಉಳಿಳಿ: ₹${reportData["totalSavings"]}
+            📈 ಮಾಸಿಶ ಉಳಿಳಿ: ₹${reportData["monthlySavings"]}
+            📊 ಬೆಳವಹಣ ದರ: ${reportData["growthRate"]}%
+            
+            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 💰
+        """.trimIndent()
+        
+        "loans" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಾಣಗಳು ವರ್ಪೋರ್ಟ
+            
+            💳 ಒಟ್ಟಲ ಸಾಣಗಳು: ${reportData["totalLoans"]}
+            ✅ ಸಕ್ರಿಯ ಸಾಣಗಳು: ${reportData["activeLoans"]}
+            ⏳ ಬಾಕಿ ಸಾಣಗಳು: ${reportData["pendingLoans"]}
+            💰 ಒಟ್ಟಲ ಮೊತ: ₹${reportData["totalAmount"]}
+            
+            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 💳
+        """.trimIndent()
+        
+        "meetings" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಭೆತಗಳು ವರ್ಪೋರ್ಟ
+            
+            📊 ಒಟ್ಟಲ ಸಭೆತಗಳು: ${reportData["totalMeetings"]}
+            ✅ ಹಾಗಿದ ಸಭೆತಗಳು: ${reportData["attendedMeetings"]}
+            📅 ಬಾಕಿ ಸಭೆತಗಳು: ${reportData["upcomingMeetings"]}
+            
+            📅 ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ. 📅
+        """.trimIndent()
+        
+        else -> "ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ. 💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ."
+    }
+}
+
+private fun formatReportForDownload(reportData: Map<String, Any>, reportType: String): String {
+    return when (reportType) {
+        "members" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸದಸ್ಯರು ವರ್ಪೋರ್ಟ
+            ================================================
+            
+            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            📊 ಒಟ್ಟಲ ಸದಸ್ಯರು: ${reportData["totalMembers"]}
+            ✅ ಸಕ್ರಿಯ ಸದಸ್ಯರು: ${reportData["activeMembers"]}
+            🆕 ಹೊಸ ಸದಸ್ಯರು: ${reportData["newMembers"]}
+            
+            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
+        """.trimIndent()
+        
+        "savings" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಉಳಿಳಿ ವರ್ಪೋರ್ಟ
+            ================================================
+            
+            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            💰 ಒಟ್ಟಲ ಉಳಿಳಿ: ₹${reportData["totalSavings"]}
+            📈 ಮಾಸಿಶ ಉಳಿಳಿ: ₹${reportData["monthlySavings"]}
+            📊 ಬೆಳವಹಣ ದರ: ${reportData["growthRate"]}%
+            
+            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
+        """.trimIndent()
+        
+        "loans" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಾಣಗಳು ವರ್ಪೋರ್ಟ
+            ================================================
+            
+            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            💳 ಒಟ್ಟಲ ಸಾಣಗಳು: ${reportData["totalLoans"]}
+            ✅ ಸಕ್ರಿಯ ಸಾಣಗಳು: ${reportData["activeLoans"]}
+            ⏳ ಬಾಕಿ ಸಾಣಗಳು: ${reportData["pendingLoans"]}
+            💰 ಒಟ್ಟಲ ಮೊತ: ₹${reportData["totalAmount"]}
+            
+            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
+        """.trimIndent()
+        
+        "meetings" -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ಸಭೆತಗಳು ವರ್ಪೋರ್ಟ
+            ================================================
+            
+            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            📊 ಒಟ್ಟಲ ಸಭೆತಗಳು: ${reportData["totalMeetings"]}
+            ✅ ಹಾಗಿದ ಸಭೆತಗಳು: ${reportData["attendedMeetings"]}
+            📅 ಬಾಕಿ ಸಭೆತಗಳು: ${reportData["upcomingMeetings"]}
+            
+            ವಿದಲ್ಲ ಮಾಡಿ ಸಂಘಟನಕ್ಕಳಿಗಳಿಗೆ ವಿದಲ್ಲ ನಿಮಿದಿದಿ.
+        """.trimIndent()
+        
+        else -> """
+            💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ - ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ
+            ================================================
+            
+            ವರ್ಪೋರ್ಟ ದಿನ: ${reportData["generatedDate"]}
+            
+            ಸಂದೇಶ: ವರ್ಪೋರ್ಟ ಲಭ್ಯಿದಿ
+        """.trimIndent()
+    }
+}
