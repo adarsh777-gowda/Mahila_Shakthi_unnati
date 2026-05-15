@@ -27,10 +27,11 @@ import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
 import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
+import com.adarsh.mahilashaktiunnati.utils.ValidationUtils
 import com.adarsh.mahilashaktiunnati.viewmodel.AuthViewModel
 
 private fun isValidIndianPhoneNumber(value: String): Boolean =
-    value.length == 13 && value.startsWith("+91") && value.drop(3).all { it.isDigit() }
+    ValidationUtils.validatePhoneNumber(value).isValid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +42,7 @@ fun ProfessionalRegisterScreen(
     onLoginSuccess: () -> Unit,
     onLanguageChanged: () -> Unit = {}
 ) {
-    var phoneNumber by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf(ValidationUtils.INDIA_PHONE_PREFIX) }
     var otp by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -157,10 +158,11 @@ fun ProfessionalRegisterScreen(
                 RegistrationForm(
                     registrationMethod = registrationMethod,
                     phoneNumber = phoneNumber,
-                    onPhoneChange = { 
-                        phoneNumber = it
+                    onPhoneChange = {
+                        val normalizedPhone = ValidationUtils.normalizeIndianPhoneInput(it)
+                        phoneNumber = normalizedPhone
                         phoneError = ""
-                        isRegisteredNumber = UserManager.isUserRegistered(it)
+                        isRegisteredNumber = UserManager.isUserRegistered(normalizedPhone)
                     },
                     phoneError = phoneError,
                     isRegisteredNumber = isRegisteredNumber,

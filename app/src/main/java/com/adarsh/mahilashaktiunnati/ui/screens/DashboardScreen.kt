@@ -44,7 +44,7 @@ fun DashboardScreen(
     val syncStatus by viewModel.syncStatus.collectAsState()
 
     var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf(ValidationUtils.INDIA_PHONE_PREFIX) }
     var query by remember { mutableStateOf("") }
     var nameError by remember { mutableStateOf<String?>(null) }
     var phoneError by remember { mutableStateOf<String?>(null) }
@@ -239,8 +239,8 @@ fun DashboardScreen(
 
                     OutlinedTextField(
                         value = phone,
-                        onValueChange = { 
-                            phone = it
+                        onValueChange = {
+                            phone = ValidationUtils.normalizeIndianPhoneInput(it)
                             phoneError = null
                         },
                         label = { Text(stringResource(R.string.member_phone)) },
@@ -255,9 +255,9 @@ fun DashboardScreen(
                             val phoneValidation = ValidationUtils.validatePhoneNumber(phone)
                             
                             if (nameValidation.isValid && phoneValidation.isValid) {
-                                viewModel.addMember(name.trim(), phone.trim())
+                                viewModel.addMember(name.trim(), ValidationUtils.normalizeIndianPhoneInput(phone))
                                 name = ""
-                                phone = ""
+                                phone = ValidationUtils.INDIA_PHONE_PREFIX
                                 nameError = null
                                 phoneError = null
                             } else {

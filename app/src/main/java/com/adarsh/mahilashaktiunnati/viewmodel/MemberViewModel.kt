@@ -226,7 +226,8 @@ class MemberViewModel(
         viewModelScope.launch {
             try {
                 val nameValidation = ValidationUtils.validateName(member.name)
-                val phoneValidation = ValidationUtils.validatePhoneNumber(member.phone)
+                val normalizedPhone = ValidationUtils.normalizeIndianPhoneInput(member.phone)
+                val phoneValidation = ValidationUtils.validatePhoneNumber(normalizedPhone)
                 if (!nameValidation.isValid) {
                     _uiMessage.value = nameValidation.errorMessage
                     return@launch
@@ -235,12 +236,12 @@ class MemberViewModel(
                     _uiMessage.value = phoneValidation.errorMessage
                     return@launch
                 }
-                if (memberDao.isPhoneExists(member.phone, member.id)) {
+                if (memberDao.isPhoneExists(normalizedPhone, member.id)) {
                     _uiMessage.value = "Phone number already exists"
                     return@launch
                 }
 
-                memberDao.updateMember(member)
+                memberDao.updateMember(member.copy(phone = normalizedPhone))
                 _uiMessage.value = "Member updated successfully"
             } catch (e: Exception) {
                 _uiMessage.value = "Error updating member: ${e.message}"
@@ -285,7 +286,8 @@ class MemberViewModel(
         viewModelScope.launch {
             try {
                 val nameValidation = ValidationUtils.validateName(name)
-                val phoneValidation = ValidationUtils.validatePhoneNumber(phone)
+                val normalizedPhone = ValidationUtils.normalizeIndianPhoneInput(phone)
+                val phoneValidation = ValidationUtils.validatePhoneNumber(normalizedPhone)
                 if (!nameValidation.isValid) {
                     _uiMessage.value = nameValidation.errorMessage
                     return@launch
@@ -294,7 +296,7 @@ class MemberViewModel(
                     _uiMessage.value = phoneValidation.errorMessage
                     return@launch
                 }
-                if (memberDao.isPhoneExists(phone.trim())) {
+                if (memberDao.isPhoneExists(normalizedPhone)) {
                     _uiMessage.value = "Phone number already exists"
                     return@launch
                 }
@@ -303,7 +305,7 @@ class MemberViewModel(
                 val currentTime = System.currentTimeMillis()
                 val member = Member(
                     name = name,
-                    phone = phone,
+                    phone = normalizedPhone,
                     photoUri = photoUri,
                     userId = userId,
                     createdAt = currentTime,

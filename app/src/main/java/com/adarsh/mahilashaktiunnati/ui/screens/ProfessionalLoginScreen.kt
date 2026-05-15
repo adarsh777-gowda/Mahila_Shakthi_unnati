@@ -27,6 +27,7 @@ import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.viewmodel.AuthViewModel
 import com.adarsh.mahilashaktiunnati.data.UserManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.utils.ValidationUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +38,7 @@ fun ProfessionalLoginScreen(
     onNavigateToRegister: () -> Unit,
     onLanguageChanged: () -> Unit = {}
 ) {
-    var phone by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf(ValidationUtils.INDIA_PHONE_PREFIX) }
     var phoneError by remember { mutableStateOf("") }
     var isRegisteredNumber by remember { mutableStateOf(false) }
     var loginMethod by remember { mutableStateOf(LoginMethod.PHONE) }
@@ -134,12 +135,13 @@ fun ProfessionalLoginScreen(
                 LoginForm(
                     loginMethod = loginMethod,
                     phone = phone,
-                    onPhoneChange = { 
-                        phone = it
+                    onPhoneChange = {
+                        val normalizedPhone = ValidationUtils.normalizeIndianPhoneInput(it)
+                        phone = normalizedPhone
                         phoneError = ""
                         otpError = ""
                         isOtpSent = false
-                        isRegisteredNumber = UserManager.isUserRegistered(it)
+                        isRegisteredNumber = UserManager.isUserRegistered(normalizedPhone)
                     },
                     phoneError = phoneError,
                     isRegisteredNumber = isRegisteredNumber,
@@ -177,7 +179,7 @@ fun ProfessionalLoginScreen(
                                 }
                             }
                             LoginMethod.PASSWORD -> {
-                                if (phone.isNotEmpty() && password.isNotEmpty()) {
+                                if (ValidationUtils.validatePhoneNumber(phone).isValid && password.isNotEmpty()) {
                                     if (UserManager.authenticateUser(phone, password)) {
                                         onLoginSuccess()
                                     } else {
@@ -432,7 +434,7 @@ private fun LoginForm(
                     status !is AuthViewModel.AuthStatus.Verifying &&
                     isRegisteredNumber &&
                     (!isOtpSent || otp.length == 6)
-                LoginMethod.PASSWORD -> status !is AuthViewModel.AuthStatus.SendingOtp && phone.isNotEmpty() && password.isNotEmpty()
+                LoginMethod.PASSWORD -> status !is AuthViewModel.AuthStatus.SendingOtp && ValidationUtils.validatePhoneNumber(phone).isValid && password.isNotEmpty()
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.adarsh.mahilashaktiunnati.R
 import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
+import com.adarsh.mahilashaktiunnati.utils.ValidationUtils
 import coil.compose.AsyncImage
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,7 +45,7 @@ fun MemberDetailScreen(
     var loanDate by remember { mutableStateOf("") }
 
     var editName by remember { mutableStateOf("") }
-    var editPhone by remember { mutableStateOf("") }
+    var editPhone by remember { mutableStateOf(ValidationUtils.INDIA_PHONE_PREFIX) }
     var editPhoto by remember { mutableStateOf<String?>(null) }
 
     var showDeleteMember by remember { mutableStateOf(false) }
@@ -152,7 +153,7 @@ fun MemberDetailScreen(
             if (m != null) {
                 LaunchedEffect(m) {
                     if (editName.isBlank()) editName = m.name
-                    if (editPhone.isBlank()) editPhone = m.phone
+                    if (editPhone == ValidationUtils.INDIA_PHONE_PREFIX) editPhone = m.phone.ifBlank { ValidationUtils.INDIA_PHONE_PREFIX }
                     if (editPhoto == null) editPhoto = m.photoUri
                 }
 
@@ -171,7 +172,7 @@ fun MemberDetailScreen(
                         )
                         OutlinedTextField(
                             value = editPhone,
-                            onValueChange = { editPhone = it },
+                            onValueChange = { editPhone = ValidationUtils.normalizeIndianPhoneInput(it) },
                             label = { Text(stringResource(R.string.member_phone)) },
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -188,7 +189,7 @@ fun MemberDetailScreen(
                             member?.let { 
                                 viewModel.updateMember(it.copy(
                                     name = editName.trim(),
-                                    phone = editPhone.trim(),
+                                    phone = ValidationUtils.normalizeIndianPhoneInput(editPhone),
                                     photoUri = editPhoto
                                 ))
                             }

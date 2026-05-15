@@ -1,16 +1,26 @@
 package com.adarsh.mahilashaktiunnati.utils
 
 object ValidationUtils {
+    const val INDIA_PHONE_PREFIX = "+91"
+
+    fun normalizeIndianPhoneInput(phone: String): String {
+        val digits = phone.filter { it.isDigit() }
+        val nationalDigits = when {
+            digits.startsWith("91") -> digits.drop(2)
+            else -> digits
+        }.take(10)
+
+        return INDIA_PHONE_PREFIX + nationalDigits
+    }
     
     fun validatePhoneNumber(phone: String): ValidationResult {
-        val trimmed = phone.trim()
+        val normalized = normalizeIndianPhoneInput(phone)
+        val mobileDigits = normalized.removePrefix(INDIA_PHONE_PREFIX)
         
         when {
-            trimmed.isEmpty() -> return ValidationResult(false, "Phone number is required")
-            !trimmed.startsWith("+") -> return ValidationResult(false, "Phone number must include country code (e.g., +91)")
-            trimmed.length < 8 -> return ValidationResult(false, "Phone number is too short")
-            trimmed.length > 15 -> return ValidationResult(false, "Phone number is too long")
-            !trimmed.substring(1).all { it.isDigit() } -> return ValidationResult(false, "Phone number contains invalid characters")
+            mobileDigits.isEmpty() -> return ValidationResult(false, "Phone number is required")
+            mobileDigits.length != 10 -> return ValidationResult(false, "Enter a 10-digit Indian mobile number")
+            !mobileDigits.all { it.isDigit() } -> return ValidationResult(false, "Phone number contains invalid characters")
             else -> return ValidationResult(true)
         }
     }
