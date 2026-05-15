@@ -129,7 +129,7 @@ fun MemberDirectoryScreen(
                 ) {
                     Text(text = error, color = Color.White)
                     IconButton(onClick = { viewModel.clearError() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close), tint = Color.White)
                     }
                 }
             }
@@ -157,18 +157,18 @@ private fun DirectoryHeader(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                 }
-                Text("Member Directory", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.member_directory), style = MaterialTheme.typography.titleLarge)
                 IconButton(onClick = onAddMember) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                StatCard("Savings", "₹$totalSavings", Icons.Default.Savings, DesignSystem.Colors.Success)
-                StatCard("Members", activeMembersCount.toString(), Icons.Default.People, DesignSystem.Colors.Info)
-                StatCard("Loans", activeLoansCount.toString(), Icons.Default.AccountBalance, DesignSystem.Colors.Warning)
+                StatCard(stringResource(R.string.savings), "₹$totalSavings", Icons.Default.Savings, DesignSystem.Colors.Success)
+                StatCard(stringResource(R.string.members), activeMembersCount.toString(), Icons.Default.People, DesignSystem.Colors.Info)
+                StatCard(stringResource(R.string.loans), activeLoansCount.toString(), Icons.Default.AccountBalance, DesignSystem.Colors.Warning)
             }
         }
     }
@@ -204,7 +204,7 @@ private fun MemberListItem(member: Member, onClick: () -> Unit) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = member.photoUri,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.member_photo),
                 modifier = Modifier.size(56.dp).clip(CircleShape),
                 contentScale = ContentScale.Crop
             )

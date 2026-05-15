@@ -1,12 +1,13 @@
 package com.adarsh.mahilashaktiunnati.ui.components
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -15,24 +16,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.shape.CornerSize
-import android.content.Intent
-import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
-import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
-import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
-import com.adarsh.mahilashaktiunnati.utils.ExportUtils
-import com.adarsh.mahilashaktiunnati.data.relations.MemberWithSavingsAndLoans
+import com.adarsh.mahilashaktiunnati.R
+import com.adarsh.mahilashaktiunnati.data.entities.Loan
 import com.adarsh.mahilashaktiunnati.data.entities.Member
 import com.adarsh.mahilashaktiunnati.data.entities.Savings
-import com.adarsh.mahilashaktiunnati.data.entities.Loan
+import com.adarsh.mahilashaktiunnati.data.relations.MemberWithSavingsAndLoans
+import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
+import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
+import com.adarsh.mahilashaktiunnati.utils.ExportUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +41,6 @@ fun ShareBottomSheet(
     allMembersData: List<MemberWithSavingsAndLoans>? = null
 ) {
     val context = LocalContext.current
-    var selectedShareOption by remember { mutableStateOf(ShareOption.NONE) }
     
     if (isVisible) {
         ModalBottomSheet(
@@ -60,7 +56,7 @@ fun ShareBottomSheet(
                     .fillMaxWidth()
                     .padding(
                         horizontal = DesignSystem.Padding.screenHorizontal,
-                        vertical = DesignSystem.Padding.cardVertical
+                        vertical = DesignSystem.Padding.screenVertical
                     ),
                 verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
             ) {
@@ -71,7 +67,7 @@ fun ShareBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Share Report",
+                        text = stringResource(R.string.share_report_title),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -83,7 +79,7 @@ fun ShareBottomSheet(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close",
+                            contentDescription = stringResource(R.string.close),
                             tint = DesignSystem.Colors.TextSecondary
                         )
                     }
@@ -95,7 +91,6 @@ fun ShareBottomSheet(
                     memberWithSavingsAndLoans = memberWithSavingsAndLoans,
                     allMembersData = allMembersData,
                     onShareSelected = { option ->
-                        selectedShareOption = option
                         handleShareOption(
                             context = context,
                             option = option,
@@ -132,7 +127,7 @@ fun ShareBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
                     Text(
-                        text = "Share to WhatsApp",
+                        text = stringResource(R.string.share_to_whatsapp),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -193,13 +188,13 @@ private fun ShareOptionCard(
         ) {
             Icon(
                 imageVector = option.icon,
-                contentDescription = option.title,
+                contentDescription = stringResource(option.titleRes),
                 tint = option.color,
                 modifier = Modifier.size(32.dp)
             )
             
             Text(
-                text = option.title,
+                text = stringResource(option.titleRes),
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Medium
                 ),
@@ -208,7 +203,7 @@ private fun ShareOptionCard(
             )
             
             Text(
-                text = option.description,
+                text = stringResource(option.descRes),
                 style = MaterialTheme.typography.bodySmall,
                 color = DesignSystem.Colors.TextSecondary,
                 textAlign = TextAlign.Center,
@@ -272,7 +267,7 @@ private fun handleShareOption(
     }
     
     val intent = ExportUtils.createWhatsAppShareIntent(context, shareText)
-    context.startActivity(Intent.createChooser(intent, "Share via"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
 }
 
 private fun handleDefaultShare(
@@ -294,7 +289,7 @@ private fun handleDefaultShare(
     }
     
     val intent = ExportUtils.createWhatsAppShareIntent(context, shareText)
-    context.startActivity(Intent.createChooser(intent, "Share via"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
 }
 
 private fun getAvailableShareOptions(
@@ -322,38 +317,38 @@ private fun getAvailableShareOptions(
 }
 
 enum class ShareOption(
-    val title: String,
-    val description: String,
+    val titleRes: Int,
+    val descRes: Int,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val color: Color
 ) {
     MEMBER_SUMMARY(
-        title = "Member Summary",
-        description = "Complete member details",
+        titleRes = R.string.member_summary,
+        descRes = R.string.member_summary_description,
         icon = Icons.Default.Person,
         color = DesignSystem.Colors.Primary
     ),
     WEEKLY_REPORT(
-        title = "Weekly Report",
-        description = "Last 7 days activity",
+        titleRes = R.string.weekly_report,
+        descRes = R.string.weekly_report_description,
         icon = Icons.Default.DateRange,
         color = DesignSystem.Colors.Success
     ),
     GROUP_SUMMARY(
-        title = "Group Summary",
-        description = "All members overview",
+        titleRes = R.string.group_summary,
+        descRes = R.string.group_summary_description,
         icon = Icons.Default.Groups,
         color = DesignSystem.Colors.Info
     ),
     PDF_EXPORT(
-        title = "PDF Export",
-        description = "Download as PDF",
+        titleRes = R.string.pdf_export,
+        descRes = R.string.pdf_export_description,
         icon = Icons.Default.PictureAsPdf,
         color = DesignSystem.Colors.Warning
     ),
     NONE(
-        title = "",
-        description = "",
+        titleRes = R.string.ok, // Placeholder
+        descRes = R.string.ok, // Placeholder
         icon = Icons.Default.Info,
         color = DesignSystem.Colors.TextSecondary
     )
@@ -372,7 +367,7 @@ fun QuickShareButton(
     IconButton(
         onClick = {
             val intent = ExportUtils.createWhatsAppShareIntent(context, shareText)
-            context.startActivity(Intent.createChooser(intent, "Share via"))
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
         },
         modifier = modifier
             .clip(DesignSystem.Shapes.Medium)
@@ -381,7 +376,7 @@ fun QuickShareButton(
     ) {
         Icon(
             imageVector = Icons.Default.Share,
-            contentDescription = "Share",
+            contentDescription = stringResource(R.string.share_report),
             tint = DesignSystem.Colors.Primary
         )
     }
@@ -400,7 +395,7 @@ fun FloatingShareButton(
     FloatingActionButton(
         onClick = {
             val intent = ExportUtils.createWhatsAppShareIntent(context, shareText)
-            context.startActivity(Intent.createChooser(intent, "Share via"))
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
         },
         modifier = modifier.shadow(
             elevation = 8.dp,
@@ -412,7 +407,7 @@ fun FloatingShareButton(
     ) {
         Icon(
             imageVector = Icons.Default.Share,
-            contentDescription = "Share",
+            contentDescription = stringResource(R.string.share_report),
             tint = DesignSystem.Colors.OnPrimary
         )
     }

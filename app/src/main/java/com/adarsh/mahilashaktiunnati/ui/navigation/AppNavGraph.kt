@@ -61,6 +61,7 @@ fun AppNavGraph(
         composable(Routes.Report) {
             ReportScreen(
                 context = context,
+                viewModel = memberViewModel,
                 onBack = {
                     navController.navigateUp()
                 }
@@ -96,7 +97,7 @@ fun AppNavGraph(
                     navController.navigate(Routes.PracticalFeatures)
                 },
                 onNavigateToAdvancedFeatures = {
-                    navController.navigate(Routes.Dashboard)
+                    navController.navigate(Routes.AdvancedFeatures)
                 },
                 onNavigateToReport = {
                     navController.navigate(Routes.Report)
@@ -159,6 +160,14 @@ fun AppNavGraph(
 
         composable(Routes.PracticalFeatures) {
             PracticalFeaturesScreen(
+                context = context,
+                viewModel = memberViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.AdvancedFeatures) {
+            AdvancedFeaturesScreen(
                 context = context,
                 viewModel = memberViewModel,
                 onBack = { navController.popBackStack() }

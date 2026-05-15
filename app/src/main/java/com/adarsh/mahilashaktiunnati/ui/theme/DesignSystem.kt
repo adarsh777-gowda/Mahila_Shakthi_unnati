@@ -39,31 +39,31 @@ object DesignSystem {
     // Color System
     object Colors {
         // Primary Colors
-        val Primary = Color(0xFFE91E63)
-        val PrimaryVariant = Color(0xFF9C27B0)
+        val Primary = Color(0xFF0E8F5A)
+        val PrimaryVariant = Color(0xFF075E45)
         val OnPrimary = Color(0xFFFFFFFF)
         
         // Secondary Colors
-        val Secondary = Color(0xFF4CAF50)
-        val SecondaryVariant = Color(0xFF388E3C)
-        val Tertiary = Color(0xFF795548)
+        val Secondary = Color(0xFFF2B705)
+        val SecondaryVariant = Color(0xFFB98500)
+        val Tertiary = Color(0xFF5B6C8F)
         val OnSecondary = Color(0xFFFFFFFF)
         
         // Surface Colors
-        val Surface = Color(0xFFF8F9FA)
+        val Surface = Color(0xFFF6F8F4)
         val SurfaceVariant = Color(0xFFFFFFFF)
         val OnSurface = Color(0xFF1C1B1F)
         val OnSurfaceVariant = Color(0xFF49454F)
         
         // Background Colors
-        val Background = Color(0xFFFCE4EC)
-        val BackgroundVariant = Color(0xFFF3E5F5)
+        val Background = Color(0xFFF7FAF4)
+        val BackgroundVariant = Color(0xFFEAF4EE)
         
         // Status Colors
-        val Success = Color(0xFF4CAF50)
-        val Warning = Color(0xFFFF9800)
-        val Error = Color(0xFFF44336)
-        val Info = Color(0xFF2196F3)
+        val Success = Color(0xFF2E7D32)
+        val Warning = Color(0xFFE08A00)
+        val Error = Color(0xFFC62828)
+        val Info = Color(0xFF2563A7)
         
         // Text Colors
         val TextPrimary = Color(0xFF212121)
@@ -73,8 +73,8 @@ object DesignSystem {
         
         // Border Colors
         val Border = Color(0xFFE0E0E0)
-        val BorderFocused = Color(0xFFE91E63)
-        val BorderError = Color(0xFFF44336)
+        val BorderFocused = Color(0xFF0E8F5A)
+        val BorderError = Color(0xFFC62828)
         
         // Card Colors
         val CardBackground = Color(0xFFFFFFFF)

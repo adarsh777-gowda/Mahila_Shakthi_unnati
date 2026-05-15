@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adarsh.mahilashaktiunnati.R
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,6 +32,7 @@ import java.util.*
 @Composable
 fun ReportScreen(
     context: android.content.Context,
+    viewModel: MemberViewModel,
     onBack: () -> Unit,
     onLanguageChanged: () -> Unit = {}
 ) {
@@ -92,7 +94,7 @@ fun ReportScreen(
         
         // Report Type Selection
         Text(
-            text = "ವರದಿ ಆಯ್ಕೆಮಾಡಿ",
+            text = stringResource(R.string.select_report_type),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF424242)
@@ -191,7 +193,7 @@ fun ReportScreen(
                         )
                     } else {
                         Text(
-                            "ವರದಿ ತಯಾರಿಸಿ",
+                            stringResource(R.string.generate_report_button),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium
                         )
@@ -270,7 +272,7 @@ private fun shareReportViaWhatsApp(context: Context, reportType: String) {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, reportText)
             }
-            context.startActivity(Intent.createChooser(shareIntent, "ವರದಿ ಹಂಚಿಕೊಳ್ಳಿ"))
+            context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_report_title)))
         }
     } catch (e: Exception) {
         // Handle error
@@ -331,47 +333,47 @@ private fun generateMockReportData(reportType: String): Map<String, Any> {
 private fun formatReportForWhatsApp(reportData: Map<String, Any>, reportType: String): String {
     return when (reportType) {
         "members" -> """
-            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸದಸ್ಯರ ವರದಿ
+            💪 Mahila Shakti Sanghatana - Member Report
             
-            📊 ಒಟ್ಟು ಸದಸ್ಯರು: ${reportData["totalMembers"]}
-            ✅ ಸಕ್ರಿಯ ಸದಸ್ಯರು: ${reportData["activeMembers"]}
-            🆕 ಹೊಸ ಸದಸ್ಯರು: ${reportData["newMembers"]}
+            📊 Total Members: ${reportData["totalMembers"]}
+            ✅ Active Members: ${reportData["activeMembers"]}
+            🆕 New Members: ${reportData["newMembers"]}
             
-            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
+            📅 Report Date: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "savings" -> """
-            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಉಳಿತಾಯ ವರದಿ
+            💪 Mahila Shakti Sanghatana - Savings Report
             
-            💰 ಒಟ್ಟು ಉಳಿತಾಯ: ₹${reportData["totalSavings"]}
-            📈 ಮಾಸಿಕ ಉಳಿತಾಯ: ₹${reportData["monthlySavings"]}
-            📊 ಬೆಳವಣಿಗೆ ದರ: ${reportData["growthRate"]}%
+            💰 Total Savings: ₹${reportData["totalSavings"]}
+            📈 Monthly Savings: ₹${reportData["monthlySavings"]}
+            📊 Growth Rate: ${reportData["growthRate"]}%
             
-            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
+            📅 Report Date: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "loans" -> """
-            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸಾಲಗಳ ವರದಿ
+            💪 Mahila Shakti Sanghatana - Loans Report
             
-            💳 ಒಟ್ಟು ಸಾಲಗಳು: ${reportData["totalLoans"]}
-            ✅ ಸಕ್ರಿಯ ಸಾಲಗಳು: ${reportData["activeLoans"]}
-            ⏳ ಬಾಕಿ ಸಾಲಗಳು: ${reportData["pendingLoans"]}
-            💰 ಒಟ್ಟು ಮೊತ್ತ: ₹${reportData["totalAmount"]}
+            💳 Total Loans: ${reportData["totalLoans"]}
+            ✅ Active Loans: ${reportData["activeLoans"]}
+            ⏳ Pending Loans: ${reportData["pendingLoans"]}
+            💰 Total Amount: ₹${reportData["totalAmount"]}
             
-            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
+            📅 Report Date: ${reportData["generatedDate"]}
         """.trimIndent()
         
         "meetings" -> """
-            💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ - ಸಭೆಗಳ ವರದಿ
+            💪 Mahila Shakti Sanghatana - Meetings Report
             
-            📊 ಒಟ್ಟು ಸಭೆಗಳು: ${reportData["totalMeetings"]}
-            ✅ ನಡೆದ ಸಭೆಗಳು: ${reportData["attendedMeetings"]}
-            📅 ಬಾಕಿ ಸಭೆಗಳು: ${reportData["upcomingMeetings"]}
+            📊 Total Meetings: ${reportData["totalMeetings"]}
+            ✅ Meetings Held: ${reportData["attendedMeetings"]}
+            📅 Remaining Meetings: ${reportData["upcomingMeetings"]}
             
-            📅 ವರದಿ ದಿನಾಂಕ: ${reportData["generatedDate"]}
+            📅 Report Date: ${reportData["generatedDate"]}
         """.trimIndent()
         
-        else -> "ವರದಿ ಲಭ್ಯವಿದೆ. 💪 ಮಹಿಳಾ ಶಕ್ತಿ ಸಂಘಟನಾ."
+        else -> "Report available. 💪 Mahila Shakti Sanghatana."
     }
 }
 

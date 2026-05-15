@@ -3,7 +3,9 @@ package com.adarsh.mahilashaktiunnati.viewmodel
 import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.adarsh.mahilashaktiunnati.BuildConfig
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +20,12 @@ class AuthViewModel : ViewModel() {
 
     private val _status = MutableStateFlow<AuthStatus>(AuthStatus.Idle)
     val status: StateFlow<AuthStatus> = _status.asStateFlow()
+
+    init {
+        if (BuildConfig.DEBUG) {
+            auth.firebaseAuthSettings.forceRecaptchaFlowForTesting(true)
+        }
+    }
 
     sealed class AuthStatus {
         data object Idle : AuthStatus()
@@ -95,12 +103,25 @@ class AuthViewModel : ViewModel() {
         override fun onVerificationFailed(e: FirebaseException) {
             Log.e("Auth", "OTP Failed: ${e.message}")
             val message = when (e) {
-                is FirebaseAuthInvalidCredentialsException -> "Invalid phone number format."
+                is FirebaseAuthInvalidCredentialsException -> "Invalid phone number format. Use +91 followed by 10 digits."
+                is FirebaseTooManyRequestsException -> "OTP quota exceeded for now. Please wait and try again later."
+                is FirebaseAuthMissingActivityForRecaptchaException -> "OTP verification needs an active screen. Please reopen this page and try again."
+                is FirebaseAuthException -> when (e.errorCode) {
+                    "ERROR_APP_NOT_AUTHORIZED" -> "App not authorized for Firebase Phone Auth. Add this app's SHA-1 and SHA-256 in Firebase Console, download the new google-services.json, then rebuild."
+                    "ERROR_INVALID_APP_CREDENTIAL" -> "Firebase rejected this app credential. Add SHA-1/SHA-256 in Firebase Console and download the updated google-services.json."
+                    "ERROR_SESSION_EXPIRED" -> "OTP session expired. Please send OTP again."
+                    else -> e.localizedMessage ?: "Phone verification failed. Check Firebase Phone Auth setup."
+                }
                 else -> {
-                    if (e.message?.contains("app-not-authorized", ignoreCase = true) == true) {
-                        "App not authorized. Ensure SHA-1/SHA-256 fingerprints are added in Firebase Console."
+                    val rawMessage = e.message.orEmpty()
+                    if (
+                        rawMessage.contains("app-not-authorized", ignoreCase = true) ||
+                        rawMessage.contains("not authorized", ignoreCase = true) ||
+                        rawMessage.contains("invalid app credential", ignoreCase = true)
+                    ) {
+                        "App not authorized for Firebase Phone Auth. Add SHA-1/SHA-256 in Firebase Console, download the new google-services.json, then rebuild."
                     } else {
-                        e.localizedMessage ?: "Verification failed. Check internet and Firebase settings."
+                        e.localizedMessage ?: "Verification failed. Check internet, Firebase Phone Auth, and SHA fingerprint setup."
                     }
                 }
             }

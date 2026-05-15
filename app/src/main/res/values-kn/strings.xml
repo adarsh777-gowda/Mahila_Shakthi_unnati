@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ಮಹಿಳಾಶಕ್ತಿ ಉನ್ನತಿ</string>
-    
+
     <!-- Common -->
     <string name="ok">ಸರಿ</string>
     <string name="cancel">ರದ್ದು</string>
@@ -18,7 +18,9 @@
     <string name="confirm">ಖಚಿತಪಡಿಸಿ</string>
     <string name="yes">ಹೌದು</string>
     <string name="no">ಇಲ್ಲ</string>
-    
+    <string name="coming_soon">ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ</string>
+    <string name="close">ಮುಚ್ಚಿ</string>
+
     <!-- Authentication -->
     <string name="login">ಲಾಗಿನ್</string>
     <string name="register">ನೋಂದಣಿ</string>
@@ -26,15 +28,54 @@
     <string name="email">ಇಮೇಲ್</string>
     <string name="password">ಪಾಸ್ವರ್ಡ್</string>
     <string name="confirm_password">ಪಾಸ್ವರ್ಡ್ ದೃಢೀಕರಿಸಿ</string>
+    <string name="retype_password_hint">ಪಾಸ್ವರ್ಡ್ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="forgot_password">ಪಾಸ್ವರ್ಡ್ ಮರೆತಿರಾ?</string>
     <string name="login_success">ಲಾಗಿನ್ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
     <string name="register_success">ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
     <string name="invalid_credentials">ಅಮಾನ್ಯ ರುಜುವಾತುಗಳು</string>
     <string name="password_mismatch">ಪಾಸ್ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ</string>
-    
+    <string name="phone_not_registered">ಈ ಸಂಖ್ಯೆಯು ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿಲ್ಲ. ದಯವಿಟ್ಟು ಮೊದಲು ನೋಂದಾಯಿಸಿ.</string>
+    <string name="sending_otp">OTP ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="send_otp">OTP ಕಳುಹಿಸಿ</string>
+    <string name="complete_registration">ನೋಂದಣಿ ಪೂರ್ಣಗೊಳಿಸಿ</string>
+    <string name="register_prompt">ಖಾತೆ ಇಲ್ಲವೇ? ಈಗಲೇ ನೋಂದಾಯಿಸಿ!</string>
+    <string name="already_have_account">ಈಗಾಗಲೆ ಖಾತೆ ಇದೆಯೇ?</string>
+    <string name="login_subtitle">ಹಣಕಾಸಿನ ಸ್ವಾತಂತ್ರ್ಯದ ಮೂಲಕ ಮಹಿಳಾ ಸಬಲೀಕರಣ</string>
+    <string name="register_subtitle">ನಮ್ಮ ಮಹಿಳೆಯರ ಸ್ವ-ಸಹಾಯ ಗುಂಪಿನೊಂದಿಗೆ ಸಂಘಟಿತರಾಗಿ</string>
+    <string name="login_method">ಲಾಗಿನ್ ವಿಧಾನ</string>
+    <string name="registration_method">ನೋಂದಣಿ ವಿಧಾನ</string>
+    <string name="phone_login">ದೂರವಾಣಿ ಲಾಗಿನ್</string>
+    <string name="password_login">ಪಾಸ್ವರ್ಡ್ ಲಾಗಿನ್</string>
+    <string name="password_hint">ನಿಮ್ಮ ಪಾಸ್ವರ್ಡ್ ನಮೂದಿಸಿ</string>
+    <string name="otp_sent">OTP ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ</string>
+    <string name="invalid_phone">ಅಮಾನ್ಯ ದೂರವಾಣಿ ಸಂಖ್ಯೆ</string>
+    <string name="duplicate_phone_registered">ಈ ಸಂಖ್ಯೆಯು ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿದೆ. ಬದಲಾಗಿ ಲಾಗಿನ್ ಮಾಡಿ.</string>
+    <string name="duplicate_phone_login_warning">⚠️ ಈ ಸಂಖ್ಯೆಯು ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿದೆ. ಬದಲಾಗಿ ಲಾಗಿನ್ ಮಾಡಿ.</string>
+    <string name="otp_rate_limit">ತುಂಬಾ OTP ವಿನಂತಿಗಳು. ದಯವಿಟ್ಟು ನಂತರ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="activity_required_for_otp">ಈ ಪರದೆಯಿಂದ OTP ಪರಿಶೀಲನೆಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="invalid_otp">ಅಮಾನ್ಯ OTP</string>
+    <string name="passwords_not_match">ಪಾಸ್ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ</string>
+    <string name="registration_success">ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="enter_username_hint">ಬಳಕೆದಾರರ ಹೆಸರನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="enter_phone_hint">ದೂರವಾಣಿ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="phone_placeholder">+91XXXXXXXXXX</string>
+    <string name="otp_placeholder">6-ಅಂಕಿಯ OTP</string>
+    <string name="username_placeholder">ಬಳಕೆದಾರರ ಹೆಸರು</string>
+    <string name="enter_both_credentials">ದೂರವಾಣಿ ಸಂಖ್ಯೆ ಮತ್ತು ಪಾಸ್ವರ್ಡ್ ಎರಡನ್ನೂ ನಮೂದಿಸಿ</string>
+    <string name="invalid_username">ಅಮಾನ್ಯ ಬಳಕೆದಾರ ಹೆಸರು</string>
+    <string name="invalid_password">ಅಮಾನ್ಯ ಪಾಸ್ವರ್ಡ್</string>
+    <string name="username">ಬಳಕೆದಾರರ ಹೆಸರು</string>
+    <string name="full_name">ಪೂರ್ಣ ಹೆಸರು</string>
+    <string name="otp">OTP</string>
+    <string name="otp_method_label">📱 OTP</string>
+    <string name="password_method_label">🔐 ಪಾಸ್ವರ್ಡ್</string>
+    <string name="login_button">ಲಾಗಿನ್ ಮಾಡಿ</string>
+    <string name="logging_in">ಲಾಗಿನ್ ಆಗುತ್ತಿದೆ...</string>
+
     <!-- Navigation -->
     <string name="home">ಮುಖಪುಟ</string>
     <string name="dashboard">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</string>
+    <string name="member">ಸದಸ್ಯ</string>
     <string name="members">ಸದಸ್ಯರು</string>
     <string name="savings">ಉಳಿತಾಯ</string>
     <string name="loans">ಸಾಲಗಳು</string>
@@ -43,7 +84,8 @@
     <string name="settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="profile">ಪ್ರೊಫೈಲ್</string>
     <string name="language">ಭಾಷೆ</string>
-    
+    <string name="member_directory">ಸದಸ್ಯರ ಡೈರೆಕ್ಟರಿ</string>
+
     <!-- Member related -->
     <string name="member_name">ಸದಸ್ಯರ ಹೆಸರು</string>
     <string name="member_phone">ದೂರವಾಣಿ ಸಂಖ್ಯೆ</string>
@@ -51,18 +93,30 @@
     <string name="add_member">ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ</string>
     <string name="edit_member">ಸದಸ್ಯರನ್ನು ಸಂಪಾದಿಸಿ</string>
     <string name="delete_member">ಸದಸ್ಯರನ್ನು ಅಳಿಸಿ</string>
+    <string name="delete_member_title">ಸದಸ್ಯರನ್ನು ಅಳಿಸುವುದೇ?</string>
     <string name="member_details">ಸದಸ್ಯರ ವಿವರಗಳು</string>
     <string name="total_members">ಒಟ್ಟು ಸದಸ್ಯರು</string>
     <string name="active_members">ಸಕ್ರಿಯ ಸದಸ್ಯರು</string>
-    
+    <string name="delete_member_confirmation">ಇದು ಸದಸ್ಯರನ್ನು ನಿಮ್ಮ ಪಟ್ಟಿಗಳಿಂದ ತೆಗೆದುಹಾಕುತ್ತದೆ. ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಅನ್ನು ನವೀಕರಿಸಲು ನೀವು ಸಿಂಕ್ ಮಾಡಬಹುದು.</string>
+    <string name="search_members_hint">ಹೆಸರು ಅಥವಾ ದೂರವಾಣಿ ಮೂಲಕ ಸದಸ್ಯರನ್ನು ಹುಡುಕಿ...</string>
+    <string name="no_members_found">ಯಾವುದೇ ಸದಸ್ಯರು ಕಂಡುಬಂದಿಲ್ಲ. ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ!</string>
+    <string name="no_members_found_for_query">\"%s\" ಗಾಗಿ ಯಾವುದೇ ಸದಸ್ಯರು ಕಂಡುಬಂದಿಲ್ಲ</string>
+    <string name="pick_photo">ಫೋಟೋ ಆರಿಸಿ</string>
+    <string name="member_photo">ಸದಸ್ಯರ ಫೋಟೋ</string>
+
     <!-- Savings related -->
     <string name="savings_amount">ಉಳಿತಾಯ ಮೊತ್ತ</string>
     <string name="add_savings">ಉಳಿತಾಯ ಸೇರಿಸಿ</string>
     <string name="total_savings">ಒಟ್ಟು ಉಳಿತಾಯ</string>
     <string name="weekly_savings">ವಾರಿಕ ಉಳಿತಾಯ</string>
     <string name="monthly_savings">ಮಾಸಿಕ ಉಳಿತಾಯ</string>
+    <string name="savings_status">ಉಳಿತಾಯ ಸ್ಥಿತಿ</string>
     <string name="savings_history">ಉಳಿತಾಯ ಇತಿಹಾಸ</string>
-    
+    <string name="no_savings_yet">ಇನ್ನೂ ಯಾವುದೇ ಉಳಿತಾಯವಿಲ್ಲ.</string>
+    <string name="delete_savings_entry">ಉಳಿತಾಯ ನಮೂದನ್ನು ಅಳಿಸುವುದೇ?</string>
+    <string name="delete_savings_confirmation">ಇದು ನಿಮ್ಮ ದಾಖಲೆಗಳಿಂದ ಉಳಿತಾಯದ ನಮೂದನ್ನು ತೆಗೆದುಹಾಕುತ್ತದೆ.</string>
+    <string name="week">ವಾರ</string>
+
     <!-- Loan related -->
     <string name="loan_amount">ಸಾಲದ ಮೊತ್ತ</string>
     <string name="loan_interest">ಬಡ್ಡಿ ದರ</string>
@@ -72,32 +126,194 @@
     <string name="total_loans">ಒಟ್ಟು ಸಾಲಗಳು</string>
     <string name="active_loans">ಸಕ್ರಿಯ ಸಾಲಗಳು</string>
     <string name="loan_status">ಸಾಲದ ಸ್ಥಿತಿ</string>
+    <string name="loan_history">ಸಾಲದ ಇತಿಹಾಸ</string>
     <string name="paid">ಪಾವತಿಸಲಾಗಿದೆ</string>
     <string name="pending">ಬಾಕಿ ಇದೆ</string>
-    
+    <string name="mark_as_paid">ಪಾವತಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಿ</string>
+    <string name="no_loans_yet">ಇನ್ನೂ ಯಾವುದೇ ಸಾಲಗಳಿಲ್ಲ.</string>
+    <string name="delete_loan">ಸಾಲವನ್ನು ಅಳಿಸುವುದೇ?</string>
+    <string name="delete_loan_entry">ಸಾಲದ ನಮೂದನ್ನು ಅಳಿಸುವುದೇ?</string>
+    <string name="delete_loan_confirmation">ಇದು ನಿಮ್ಮ ದಾಖಲೆಗಳಿಂದ ಸಾಲದ ನಮೂದನ್ನು ತೆಗೆದುಹಾಕುತ್ತದೆ.</string>
+    <string name="loan_amount_display">ಮೊತ್ತ: ₹%1$d</string>
+    <string name="loan_interest_display">ಬಡ್ಡಿ (10%%): ₹%1$d</string>
+    <string name="loan_total_display">ಒಟ್ಟು ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ: ₹%1$d</string>
+    <string name="loan_date_display">ದಿನಾಂಕ: %1$s</string>
+    <string name="loan_status_display">ಸ್ಥಿತಿ: %1$s</string>
+    <string name="pick_date">ದಿನಾಂಕ ಆರಿಸಿ</string>
+
     <!-- Dashboard -->
     <string name="overview">ಅವಲೋಕನ</string>
     <string name="statistics">ಅಂಕಿಅಂಶಗಳು</string>
     <string name="recent_activity">ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ</string>
+    <string name="recent_activities">ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆಗಳು</string>
     <string name="financial_summary">ಹಣಕಾಸಿನ ಸಾರಾಂಶ</string>
-    
+    <string name="welcome_admin">ಸ್ವಾಗತ, ನಿರ್ವಾಹಕರೇ!</string>
+    <string name="welcome_message">👋 ಸ್ವಾಗತ! ನಿಮ್ಮ ಸಂಘಟನದ ನಿರ್ವಹಣಕ್ಕೆ ಸ್ವಾಗತ</string>
+    <string name="sync_to_cloud">ಕ್ಲೌಡ್‌ಗೆ ಸಿಂಕ್ ಮಾಡಿ</string>
+    <string name="fetch_from_cloud">ಕ್ಲೌಡ್‌ನಿಂದ ಪಡೆಯಿರಿ</string>
+    <string name="offline_mode_warning">ಆಫ್‌ಲೈನ್ ಮೋಡ್ - ಸಂಪರ್ಕ ಮರಳಿದಾಗ ಡೇಟಾ ಸಿಂಕ್ ಆಗುತ್ತದೆ</string>
+    <string name="offline_mode_message">ಆಫ್‌ಲೈನ್ ಮೋಡ್ - ಸಂಪರ್ಕ ಮರಳಿದಾಗ ಡೇಟಾ ಸಿಂಕ್ ಆಗುತ್ತದೆ</string>
+    <string name="syncing">ಸಿಂಕ್ ಆಗುತ್ತಿದೆ...</string>
+    <string name="fetching">ಪಡೆಯಲಾಗುತ್ತಿದೆ...</string>
+    <string name="sync_completed">ಸಿಂಕ್ ಪೂರ್ಣಗೊಂಡಿದೆ</string>
+    <string name="sync_failed">ಸಿಂಕ್ ವಿಫಲವಾಗಿದೆ: %s</string>
+    <string name="quick_actions">ತ್ವರಿತ ಕ್ರಮಗಳು</string>
+
     <!-- AI Assistant -->
     <string name="ask_ai">AI ಗೆ ಕೇಳಿ</string>
     <string name="type_message">ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ಟೈಪ್ ಮಾಡಿ...</string>
     <string name="send">ಕಳುಹಿಸಿ</string>
     <string name="ai_insights">AI ಒಳನೋಟಗಳು</string>
+    <string name="ai_recommendation_format">ಶಿಫಾರಸು: %1$s</string>
+    <string name="predictive_analytics">ಮುನ್ಸೂಚಕ ವಿಶ್ಲೇಷಣೆ</string>
+    <string name="prediction_confidence">ವಿಶ್ವಾಸಾರ್ಹತೆ: %1$d%%</string>
+    <string name="prediction_timeframe">• %1$s</string>
     <string name="financial_advice">ಹಣಕಾಸಿನ ಸಲಹೆ</string>
-    
+    <string name="analyze_savings_trends">ನನ್ನ ಉಳಿತಾಯದ ಟ್ರೆಂಡ್ ಅನ್ನು ವಿಶ್ಲೇಷಿಸಿ</string>
+    <string name="assess_loan_risks">ಸಾಲದ ಅಪಾಯಗಳನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ</string>
+    <string name="analyze_all_data">ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ವಿಶ್ಲೇಷಿಸಿ</string>
+    <string name="clear_chat">ಚಾಟ್ ಅಳಿಸಿ</string>
+    <string name="ai_description">AI ಸಹಾಯ ಪಡೆಯಿರಿ</string>
+    <string name="ai_q1">ನಿಮ್ಮ ಉಳಿತಾಯದ ಟ್ರೆಂಡ್ ಅನ್ನು ಹೇಗೆ ನೋಡುವುದು?</string>
+    <string name="ai_q2">ಸಾಲದ ಅರ್ಹತೆಯನ್ನು ಹೇಗೆ ತಿಳಿಯುವುದು?</string>
+    <string name="ai_q3">AI ಸಹಾಯಕನೊಂದಿಗೆ ಹೇಗೆ ಮಾತನಾಡುವುದು?</string>
+    <string name="ai_q4">ವರದಿಗಳನ್ನು ಹೇಗೆ ರಚಿಸುವುದು?</string>
+    <string name="priority_high">ಹೆಚ್ಚು</string>
+    <string name="priority_medium">ಮಧ್ಯಮ</string>
+    <string name="priority_low">ಕಡಿಮೆ</string>
+
     <!-- Reports -->
     <string name="generate_report">ವರದಿಯನ್ನು ರಚಿಸಿ</string>
     <string name="export_pdf">PDF ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿ</string>
+    <string name="open_pdf">PDF ತೆರೆಯಿರಿ</string>
+    <string name="share_pdf">PDF ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_report">ವರದಿಯನ್ನು ಹಂಚಿಸಿ</string>
+    <string name="share_whatsapp_summary">WhatsApp ಸಾರಾಂಶವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="weekly_report">ವಾರಿಕ ವರದಿ</string>
     <string name="monthly_report">ಮಾಸಿಕ ವರದಿ</string>
-    
+    <string name="generate_members_report">ಸದಸ್ಯರ ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="generate_savings_report">ಉಳಿತಾಯ ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="generate_loans_report">ಸಾಲಗಳ ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="generate_meetings_report">ಸಭೆಗಳ ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="generate_general_report">ಸಾಮಾನ್ಯ ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="generating_report">ವರದಿ ತಯಾರಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="share_whatsapp">WhatsApp ಮೂಲಕ ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="download_report">ವರದಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ</string>
+    <string name="reports_description">ವರದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ರಚಿಸಿ</string>
+    <string name="select_report_prompt">ವರದಿಯನ್ನು ಆರಿಸಿ</string>
+    <string name="generate_report_button">ವರದಿ ತಯಾರಿಸಿ</string>
+    <string name="select_report_type">ವರದಿ ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="share_report_title">ವರದಿಯನ್ನು ಹಂಚಿಕೊಳ್ಳಿ</string>
+
     <!-- Language Selection -->
     <string name="select_language">ಭಾಷೆಯನ್ನು ಆರಿಸಿ</string>
     <string name="english">English</string>
     <string name="kannada">ಕನ್ನಡ</string>
     <string name="language_changed">ಭಾಷೆ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ</string>
+
+    <!-- Features & Descriptions -->
+    <string name="members_description">ಸದಸ್ಯರನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ</string>
+    <string name="savings_description">ಉಳಿತಾಯವನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ</string>
+    <string name="loans_description">ಸಾಲಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ</string>
+    <string name="help_description">ನಿಮ್ಮ ಮಹಿಳಾ ಸ್ವ-ಸಹಾಯ ಗುಂಪಿಗೆ ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ ಪಡೆಯಿರಿ</string>
+    <string name="advanced_features">ಸುಧಾರಿತ ವೈಶಿಷ್ಟ್ಯಗಳು</string>
+    <string name="production_tools_description">ಮಹಿಳಾ ಸ್ವ-ಸಹಾಯ ಗುಂಪುಗಳಿಗೆ ಉತ್ಪಾದನಾ-ಸಿದ್ಧ ಸಾಧನಗಳು</string>
+    <string name="voice_recording">ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್</string>
+    <string name="voice_recording_tab">ಧ್ವನಿ ರೆಕಾರ್ಡಿಂಗ್</string>
+    <string name="biometrics">ಬಯೋಮೆಟ್ರಿಕ್ಸ್</string>
+    <string name="biometrics_tab">ಬಯೋಮೆಟ್ರಿಕ್ಸ್</string>
+    <string name="qr_attendance">QR ಹಾಜರಾತಿ</string>
+    <string name="qr_attendance_tab">QR ಹಾಜರಾತಿ</string>
+    <string name="loan_reminders">ಸಾಲದ ಜ್ಞಾಪನೆಗಳು</string>
+    <string name="loan_reminders_tab">ಸಾಲದ ಜ್ಞಾಪನೆಗಳು</string>
+    <string name="multi_language">ಬಹು-ಭಾಷೆ</string>
+    <string name="multi_language_tab">ಬಹು-ಭಾಷೆ</string>
+    <string name="emergency_backup">ತುರ್ತು ಬ್ಯಾಕಪ್</string>
+    <string name="emergency_backup_tab">ತುರ್ತು ಬ್ಯಾಕಪ್</string>
+    <string name="voice_recording_description">ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆಯೊಂದಿಗೆ ಸಭೆಯ ನಡಾವಳಿಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಿ</string>
+    <string name="biometrics_description">ಫಿಂಗರ್ಪ್ರಿಂಟ್/ಫೇಸ್ ಐಡಿ ಮೂಲಕ ಸುರಕ್ಷಿತ ಅಪ್ಲಿಕೇಶನ್ ಪ್ರವೇಶ</string>
+    <string name="qr_attendance_description">QR ಕೋಡ್‌ಗಳೊಂದಿಗೆ ಸದಸ್ಯರ ಹಾಜರಾತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ</string>
+    <string name="loan_reminders_description">ಸ್ವಯಂಚಾಲಿತ ಸಾಲ ಮರುಪಾವತಿ ಅಧಿಸೂಚನೆಗಳು</string>
+    <string name="multi_language_description">ಪ್ರಾದೇಶಿಕ ಭಾಷೆಗಳಲ್ಲಿ ಧ್ವನಿ ಆಜ್ಞೆಗಳು</string>
+    <string name="emergency_backup_description">ನಿರ್ಣಾಯಕ ಡೇಟಾಕ್ಕಾಗಿ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್</string>
+    <string name="back_to_dashboard">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ</string>
+
+    <!-- Help & Support -->
+    <string name="help">ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ</string>
+    <string name="help_welcome">ನಮ್ಮ ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಸ್ವಾಗತ</string>
+    <string name="loan_management">ಸಾಲ ನಿರ್ವಹಣೆ</string>
+    <string name="loan_management_description">ಸಾಲಗಳನ್ನು ನಿರ್ವಹಿಸಿ, ಮರುಪಾವತಿಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಸಾಲದ ಇತಿಹಾಸವನ್ನು ವೀಕ್ಷಿಸಿ</string>
+    <string name="loan_question_1">ಹೊಸ ಸಾಲಕ್ಕಾಗಿ ನಾನು ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು?</string>
+    <string name="loan_question_2">ಪ್ರಸ್ತುತ ಬಡ್ಡಿ ದರಗಳು ಯಾವುವು?</string>
+    <string name="loan_question_3">ನನ್ನ ಸಾಲದ ಬಾಕಿಯನ್ನು ನಾನು ಹೇಗೆ ಪರಿಶೀಲಿಸುವುದು?</string>
+    <string name="savings_management">ಉಳಿತಾಯ ನಿರ್ವಹಣೆ</string>
+    <string name="savings_management_description">ಉಳಿತಾಯವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ಗುರಿಗಳನ್ನು ಹೊಂದಿಸಿ ಮತ್ತು ಹಣಕಾಸಿನ ಪ್ರಗತಿಯನ್ನು ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ</string>
+    <string name="savings_question_1">ನಾನು ನಿಯಮಿತವಾಗಿ ಉಳಿತಾಯ ಮಾಡುವುದು ಹೇಗೆ?</string>
+    <string name="savings_question_2">ಅತ್ಯುತ್ತಮ ಉಳಿತಾಯ ಅಭ್ಯಾಸಗಳು ಯಾವುವು?</string>
+    <string name="savings_question_3">ನನ್ನ ಉಳಿತಾಯದ ಮೇಲಿನ ಬಡ್ಡಿಯನ್ನು ನಾನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಿ?</string>
+    <string name="technical_support">ತಾಂತ್ರಿಕ ಬೆಂಬಲ</string>
+    <string name="technical_support_description">ತಾಂತ್ರಿಕ ಸಹಾಯ ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ ಬೆಂಬಲ ಪಡೆಯಿರಿ</string>
+    <string name="technical_question_1">ನನ್ನ ಪಾಸ್ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸುವುದು ಹೇಗೆ?</string>
+    <string name="technical_question_2">ಅಪ್ಲಿಕೇಶನ್ ಏಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲ?</string>
+    <string name="technical_question_3">ಗ್ರಾಹಕ ಬೆಂಬಲವನ್ನು ನಾನು ಹೇಗೆ ಸಂಪರ್ಕಿಸಲಿ?</string>
+    <string name="ai_assistance">AI ನೆರವು</string>
+    <string name="ai_assistance_description">ಹಣಕಾಸಿನ ಮಾರ್ಗದರ್ಶನಕ್ಕಾಗಿ AI ಸಹಾಯ ಪಡೆಯಿರಿ</string>
+    <string name="ai_question_1">AI ನನ್ನ ಹಣಕಾಸಿನ ವಿಷಯದಲ್ಲಿ ಹೇಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ?</string>
+    <string name="ai_question_2">AI ಯಾವ ಹಣಕಾಸಿನ ಒಳನೋಟಗಳನ್ನು ನೀಡಬಹುದು?</string>
+    <string name="ai_question_3">AI ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಬಳಸುವುದು ಹೇಗೆ?</string>
+    <string name="help_center_welcome">ನಮ್ಮ ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಸ್ವಾಗತ</string>
+    <string name="call_support">📞 ಕರೆ ಮಾಡಿ</string>
+    <string name="call_us">📞 ನಮಗೆ ಕರೆ ಮಾಡಿ</string>
+    <string name="video_tutorial">📹 ವಿಡಿಯೋ</string>
+    <string name="video_help">📹 ವಿಡಿಯೋ ಸಹಾಯ</string>
+
+    <!-- Practical Features -->
+    <string name="practical_features">ಪ್ರಾಯೋಗಿಕ ವೈಶಿಷ್ಟ್ಯಗಳು</string>
+    <string name="essential_tools_description">ಮಹಿಳಾ ಸ್ವ-ಸಹಾಯ ಗುಂಪುಗಳಿಗೆ ಅಗತ್ಯವಾದ ಪರಿಕರಗಳು</string>
+    <string name="compliance">ಅನುಸರಣೆ</string>
+    <string name="compliance_tab">ಅನುಸರಣೆ</string>
+    <string name="loan_eligibility">ಸಾಲದ ಅರ್ಹತೆ</string>
+    <string name="loan_eligibility_tab">ಸಾಲದ ಅರ್ಹತೆ</string>
+    <string name="meetings">ಸಭೆಗಳು</string>
+    <string name="meetings_tab">ಸಭೆಗಳು</string>
+    <string name="sms">SMS</string>
+    <string name="sms_tab">SMS</string>
+    <string name="emergency">ತುರ್ತು</string>
+    <string name="emergency_tab">ತುರ್ತು</string>
+    <string name="financial">ಹಣಕಾಸು</string>
+    <string name="financial_tab">ಹಣಕಾಸು</string>
+    <string name="vernacular">ಸ್ಥಳೀಯ ಭಾಷೆ</string>
+    <string name="vernacular_tab">ಸ್ಥಳೀಯ ಭಾಷೆ</string>
+    <string name="compliance_description">ನಿಯಂತ್ರಕ ಅಗತ್ಯತೆಗಳೊಂದಿಗೆ ಗುಂಪಿನ ಅನುಸರಣೆಯನ್ನು ಲೆಕ್ಕಹಾಕಿ</string>
+    <string name="loan_eligibility_description">Check loan eligibility based on savings patterns</string>
+    <string name="meetings_description">Generate meeting reminders and schedules</string>
+    <string name="sms_description">Create SMS reminders for members</string>
+    <string name="emergency_description">Manage emergency contact lists</string>
+    <string name="financial_description">Track financial literacy metrics</string>
+    <string name="vernacular_description">Generate content in local languages</string>
+
+    <!-- Recent Activity Mock Data -->
+    <string name="new_savings_activity">ಹೊಸ ಉಳಿತಾಯ</string>
+    <string name="new_savings_description">ಸುಮಾ ₹500 ಉಳಿತಾಯ ಸೇರಿಸಲಾಯಿತು</string>
+    <string name="new_member_activity">ಹೊಸ ಸದಸ್ಯ</string>
+    <string name="new_member_description">ಸುಮಾ ರಮೇಶ್ ಸಂಘಟನಕ್ಕೆ ಸೇರಿದರು</string>
+    <string name="loan_approval_activity">ಸಾಲ ಅನುಮೋದನೆ</string>
+    <string name="loan_approval_description">ಶೋಭಾ ₹25,000 ಸಾಲ ಅನುಮೋದನೆ</string>
+    <string name="report_generation_activity">ವರದಿ ಉತ್ಪಾದನೆ</string>
+    <string name="report_generation_description">ಮಾಸಿಕ ವರದಿ ಉತ್ಪಾದಿಸಲಾಯಿತು</string>
+    <string name="two_hours_ago">2 ಗಂಟೆಗಳ ಹಿಂದೆ</string>
+    <string name="five_hours_ago">5 ಗಂಟೆಗಳ ಹಿಂದೆ</string>
+    <string name="one_day_ago">1 ದಿನದ ಹಿಂದೆ</string>
+    <string name="two_days_ago">2 ದಿನಗಳ ಹಿಂದೆ</string>
+
+    <!-- Share Strings -->
+    <string name="share_to_whatsapp">WhatsApp ಮೂಲಕ ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="member_summary">ಸದಸ್ಯರ ಸಾರಾಂಶ</string>
+    <string name="member_summary_description">ಸದಸ್ಯರ ಪೂರ್ಣ ವಿವರಗಳು</string>
+    <string name="weekly_report_description">ಕಳೆದ 7 ದಿನಗಳ ಚಟುವಟಿಕೆ</string>
+    <string name="group_summary">ಗುಂಪಿನ ಸಾರಾಂಶ</string>
+    <string name="group_summary_description">ಎಲ್ಲಾ ಸದಸ್ಯರ ಅವಲೋಕನ</string>
+    <string name="pdf_export">PDF ಎಕ್ಸ್‌ಪೋರ್ಟ್</string>
+    <string name="pdf_export_description">PDF ಆಗಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ</string>
+    <string name="share_via">ಇದರ ಮೂಲಕ ಹಂಚಿಕೊಳ್ಳಿ</string>
 </resources>

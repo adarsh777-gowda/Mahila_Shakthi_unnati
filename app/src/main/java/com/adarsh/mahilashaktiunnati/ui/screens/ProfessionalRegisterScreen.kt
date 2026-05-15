@@ -22,11 +22,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adarsh.mahilashaktiunnati.R
-import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
-import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
-import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.data.UserManager
 import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
+import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
+import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
 import com.adarsh.mahilashaktiunnati.viewmodel.AuthViewModel
 
 private fun isValidIndianPhoneNumber(value: String): Boolean =
@@ -70,7 +70,7 @@ fun ProfessionalRegisterScreen(
     
     // Initialize UserManager with demo users
     LaunchedEffect(Unit) {
-        UserManager.initializeDemoUsers()
+        UserManager.initialize(context)
     }
 
     LaunchedEffect(authStatus) {
@@ -310,7 +310,7 @@ private fun RegisterAppHeader() {
         
         // App Name
         Text(
-            text = "💪 ಮಹಿಳ ಶಕ್ತಿ ಸಂಘಟನ",
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontSize = DesignSystem.Typography.Heading3.sp,
                 fontWeight = FontWeight.Bold
@@ -321,7 +321,7 @@ private fun RegisterAppHeader() {
         
         // App Subtitle
         Text(
-            text = "ನಮ್ಮ ಮಹಿಳೆಯರ ಸ್ವ-ಸಹಾಯ ಗುಂಪಿನೊಂದಿಗೆ ಸಂಘಟಿತರಾಗಿ",
+            text = stringResource(R.string.register_subtitle),
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontSize = DesignSystem.Typography.Body2.sp
             ),
@@ -345,7 +345,7 @@ private fun RegistrationMethodSelector(
         verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
         Text(
-            text = "ನೋಂದಣಿ ವಿಧಾನ",
+            text = stringResource(R.string.registration_method),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -360,7 +360,7 @@ private fun RegistrationMethodSelector(
                 onClick = { onMethodSelected(RegistrationMethod.OTP) },
                 label = { 
                     Text(
-                        text = "📱 OTP",
+                        text = stringResource(R.string.otp_method_label),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -376,7 +376,7 @@ private fun RegistrationMethodSelector(
                 onClick = { onMethodSelected(RegistrationMethod.PASSWORD) },
                 label = { 
                     Text(
-                        text = "🔐 ಪಾಸ್ವರ್ಡ್",
+                        text = stringResource(R.string.password_method_label),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -425,7 +425,7 @@ private fun RegistrationForm(
             value = phoneNumber,
             onValueChange = onPhoneChange,
             label = { Text(stringResource(R.string.member_phone)) },
-            placeholder = { Text("ದೂರವಾಣಿ ಸಂಖ್ಯೆ", color = DesignSystem.Colors.TextHint) },
+            placeholder = { Text(stringResource(R.string.phone_placeholder), color = DesignSystem.Colors.TextHint) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             singleLine = true,
@@ -456,7 +456,7 @@ private fun RegistrationForm(
             value = username,
             onValueChange = onUsernameChange,
             label = { Text(stringResource(R.string.username)) },
-            placeholder = { Text("ಬಳಕೆದಾರರ ಹೆಸರು", color = DesignSystem.Colors.TextHint) },
+            placeholder = { Text(stringResource(R.string.username_placeholder), color = DesignSystem.Colors.TextHint) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
@@ -480,7 +480,7 @@ private fun RegistrationForm(
                 value = password,
                 onValueChange = onPasswordChange,
                 label = { Text(stringResource(R.string.password)) },
-                placeholder = { Text("ಪಾಸ್ವರ್ಡ್", color = DesignSystem.Colors.TextHint) },
+                placeholder = { Text(stringResource(R.string.password_hint), color = DesignSystem.Colors.TextHint) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -501,8 +501,8 @@ private fun RegistrationForm(
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = onConfirmPasswordChange,
-                label = { Text("ಪಾಸ್ವರ್ಡ್ ದೃಢೀಕರಿಸಿ") },
-                placeholder = { Text("ಪಾಸ್ವರ್ಡ್ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ", color = DesignSystem.Colors.TextHint) },
+                label = { Text(stringResource(R.string.confirm_password)) },
+                placeholder = { Text(stringResource(R.string.retype_password_hint), color = DesignSystem.Colors.TextHint) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
@@ -526,8 +526,8 @@ private fun RegistrationForm(
             OutlinedTextField(
                 value = otp,
                 onValueChange = onOtpChange,
-                label = { Text("OTP") },
-                placeholder = { Text("6-ಅಂಕಿಯ OTP", color = DesignSystem.Colors.TextHint) },
+                label = { Text(stringResource(R.string.otp)) },
+                placeholder = { Text(stringResource(R.string.otp_placeholder), color = DesignSystem.Colors.TextHint) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
@@ -568,8 +568,8 @@ private fun RegistrationForm(
         ) {
             Text(
                 text = when (registrationMethod) {
-                    RegistrationMethod.OTP -> if (!isOtpSent) "OTP ಕಳುಹಿಸಿ" else "ನೋಂದಣಿ ಪೂರ್ಣಗೊಳಿಸಿ"
-                    RegistrationMethod.PASSWORD -> "ನೋಂದಣಿ ಮಾಡಿ"
+                    RegistrationMethod.OTP -> if (!isOtpSent) stringResource(R.string.send_otp) else stringResource(R.string.complete_registration)
+                    RegistrationMethod.PASSWORD -> stringResource(R.string.register)
                 },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium
@@ -586,7 +586,7 @@ private fun LoginLink(onLoginSuccess: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "ಈಗಾಗಲೆ ಖಾತೆ ಇದೆಯೇ?",
+            text = stringResource(R.string.already_have_account),
             style = MaterialTheme.typography.bodyMedium,
             color = DesignSystem.Colors.TextSecondary
         )
@@ -598,7 +598,7 @@ private fun LoginLink(onLoginSuccess: () -> Unit) {
             modifier = Modifier.padding(horizontal = DesignSystem.Spacing.sm)
         ) {
             Text(
-                text = "ಲಾಗಿನ್ ಮಾಡಿ",
+                text = stringResource(R.string.login),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),

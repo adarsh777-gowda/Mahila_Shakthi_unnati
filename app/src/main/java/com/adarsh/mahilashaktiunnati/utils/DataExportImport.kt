@@ -58,7 +58,7 @@ object DataExportImport {
                     
                     // Write data
                     savings.forEach { saving ->
-                        writer.appendLine("${saving.id},${saving.memberId},${saving.amount},${escapeCsv(saving.date.toString())},${escapeCsv(saving.status)},${dateFormat.format(Date(saving.date))},${dateFormat.format(Date(saving.date))}")
+                        writer.appendLine("${saving.id},${saving.memberId},${saving.amount},${escapeCsv(saving.week)},${escapeCsv(saving.status)},${dateFormat.format(Date(saving.createdAt))},${dateFormat.format(Date(saving.updatedAt))}")
                     }
                 }
                 
@@ -108,27 +108,19 @@ object DataExportImport {
                 val members = mutableListOf<MemberImportData>()
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                        var line = reader.readLine()
-                        if (line != null) {
-                            // Skip header
-                            line = reader.readLine()
-                        }
-                        
-                        while (line != null) {
-                            val parts = line.split(",").map { it.trim() }
+                        readCsvRecords(reader).drop(1).forEach { parts ->
                             if (parts.size >= 3) {
                                 try {
                                     val member = MemberImportData(
-                                        name = unescapeCsv(parts[1]),
-                                        phone = unescapeCsv(parts[2]),
-                                        photoUri = if (parts.size > 3) unescapeCsv(parts[3]) else null
+                                        name = parts[1],
+                                        phone = parts[2],
+                                        photoUri = if (parts.size > 3) parts[3] else null
                                     )
                                     members.add(member)
                                 } catch (e: Exception) {
                                     // Skip invalid lines
                                 }
                             }
-                            line = reader.readLine()
                         }
                     }
                 }
@@ -145,28 +137,20 @@ object DataExportImport {
                 val savings = mutableListOf<SavingsImportData>()
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                        var line = reader.readLine()
-                        if (line != null) {
-                            // Skip header
-                            line = reader.readLine()
-                        }
-                        
-                        while (line != null) {
-                            val parts = line.split(",").map { it.trim() }
+                        readCsvRecords(reader).drop(1).forEach { parts ->
                             if (parts.size >= 4) {
                                 try {
                                     val saving = SavingsImportData(
                                         memberId = parts[1].toInt(),
                                         amount = parts[2].toInt(),
-                                        week = unescapeCsv(parts[3]),
-                                        status = if (parts.size > 4) unescapeCsv(parts[4]) else "Pending"
+                                        week = parts[3],
+                                        status = if (parts.size > 4) parts[4] else "Pending"
                                     )
                                     savings.add(saving)
                                 } catch (e: Exception) {
                                     // Skip invalid lines
                                 }
                             }
-                            line = reader.readLine()
                         }
                     }
                 }
@@ -183,28 +167,20 @@ object DataExportImport {
                 val loans = mutableListOf<LoanImportData>()
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                        var line = reader.readLine()
-                        if (line != null) {
-                            // Skip header
-                            line = reader.readLine()
-                        }
-                        
-                        while (line != null) {
-                            val parts = line.split(",").map { it.trim() }
+                        readCsvRecords(reader).drop(1).forEach { parts ->
                             if (parts.size >= 4) {
                                 try {
                                     val loan = LoanImportData(
                                         memberId = parts[1].toInt(),
                                         amount = parts[2].toInt(),
-                                        date = unescapeCsv(parts[3]),
-                                        status = if (parts.size > 4) unescapeCsv(parts[4]) else "Pending"
+                                        date = parts[3],
+                                        status = if (parts.size > 4) parts[4] else "Pending"
                                     )
                                     loans.add(loan)
                                 } catch (e: Exception) {
                                     // Skip invalid lines
                                 }
                             }
-                            line = reader.readLine()
                         }
                     }
                 }
@@ -236,12 +212,60 @@ object DataExportImport {
         }
     }
     
-    private fun unescapeCsv(value: String): String {
-        return if (value.startsWith("\"") && value.endsWith("\"")) {
-            value.substring(1, value.length - 1).replace("\"\"", "\"")
-        } else {
-            value
+    private fun readCsvRecords(reader: Reader): List<List<String>> {
+        val records = mutableListOf<List<String>>()
+        val values = mutableListOf<String>()
+        val current = StringBuilder()
+        var inQuotes = false
+        var previousCharWasCarriageReturn = false
+
+        while (true) {
+            val next = reader.read()
+            if (next == -1) break
+
+            val char = next.toChar()
+            when {
+                previousCharWasCarriageReturn && char == '\n' -> {
+                    previousCharWasCarriageReturn = false
+                }
+                char == '"' -> {
+                    reader.mark(1)
+                    val peek = reader.read()
+                    if (inQuotes && peek == '"'.code) {
+                        current.append('"')
+                    } else {
+                        inQuotes = !inQuotes
+                        if (peek != -1) {
+                            reader.reset()
+                        }
+                    }
+                    previousCharWasCarriageReturn = false
+                }
+                char == ',' && !inQuotes -> {
+                    values.add(current.toString().trim())
+                    current.clear()
+                    previousCharWasCarriageReturn = false
+                }
+                (char == '\n' || char == '\r') && !inQuotes -> {
+                    values.add(current.toString().trim())
+                    records.add(values.toList())
+                    values.clear()
+                    current.clear()
+                    previousCharWasCarriageReturn = char == '\r'
+                }
+                else -> {
+                    current.append(char)
+                    previousCharWasCarriageReturn = false
+                }
+            }
         }
+
+        if (current.isNotEmpty() || values.isNotEmpty()) {
+            values.add(current.toString().trim())
+            records.add(values.toList())
+        }
+
+        return records
     }
 }
 

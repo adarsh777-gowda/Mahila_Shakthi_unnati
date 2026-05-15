@@ -51,6 +51,7 @@ fun AIAssistantScreen(
     val members by memberViewModel.members.collectAsState()
     val analyzeSavingsPrompt = stringResource(R.string.analyze_savings_trends)
     val assessLoanRisksPrompt = stringResource(R.string.assess_loan_risks)
+    val analyzeAllPrompt = stringResource(R.string.analyze_all_data)
     
     var query by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -160,7 +161,7 @@ fun AIAssistantScreen(
             
             Button(
                 onClick = { 
-                    aiViewModel.analyzeData(members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
+                    aiViewModel.sendMessage(analyzeAllPrompt, members.map { com.adarsh.mahilashaktiunnati.data.entities.Member(it.id, it.name, it.phone, joinDate = System.currentTimeMillis(), isActive = true) }, emptyList(), emptyList())
                 },
                 modifier = Modifier.weight(1f)
             ) {
@@ -309,6 +310,12 @@ private fun InsightItem(insight: FinancialInsight) {
         Priority.LOW -> Green
     }
     
+    val priorityLabel = when (insight.priority) {
+        Priority.HIGH -> stringResource(R.string.priority_high)
+        Priority.MEDIUM -> stringResource(R.string.priority_medium)
+        Priority.LOW -> stringResource(R.string.priority_low)
+    }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -335,7 +342,7 @@ private fun InsightItem(insight: FinancialInsight) {
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = insight.priority.name,
+                        text = priorityLabel,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )

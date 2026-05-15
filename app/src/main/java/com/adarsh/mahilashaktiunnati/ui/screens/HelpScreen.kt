@@ -90,7 +90,7 @@ fun HelpScreen(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         )
         Text(
-            text = "ನಮ್ಮ ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ ಕೇಂದ್ರಕ್ಕೆ ಸ್ವಾಗತ",
+            text = stringResource(R.string.help_welcome),
             style = MaterialTheme.typography.bodyLarge,
             color = Color(0xFF616161),
             textAlign = TextAlign.Center,
@@ -133,13 +133,13 @@ fun HelpScreen(
             ),
             HelpCategory(
                 icon = "🤖",
-                title = "AI ಸಹಾಯ",
-                description = "AI ಮಾರ್ಗದರ್ಶನ ಸಹಾಯ",
+                title = stringResource(R.string.ai_help_category),
+                description = stringResource(R.string.ai_help_description),
                 questions = listOf(
-                    "ನಿಮ್ಮ ಉಳಿತಾಯದ ಟ್ರೆಂಡ್ ಅನ್ನು ಹೇಗೆ ನೋಡುವುದು?",
-                    "ಸಾಲದ ಅರ್ಹತೆಯನ್ನು ಹೇಗೆ ತಿಳಿಯುವುದು?",
-                    "AI ಸಹಾಯಕನೊಂದಿಗೆ ಹೇಗೆ ಮಾತನಾಡುವುದು?",
-                    "ವರದಿಗಳನ್ನು ಹೇಗೆ ರಚಿಸುವುದು?"
+                    stringResource(R.string.ai_q1),
+                    stringResource(R.string.ai_q2),
+                    stringResource(R.string.ai_q3),
+                    stringResource(R.string.ai_q4)
                 )
             )
         )
@@ -193,7 +193,7 @@ fun HelpScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Help,
-                                contentDescription = "Get help",
+                                contentDescription = stringResource(R.string.help),
                                 tint = accentColor
                             )
                         }
@@ -206,7 +206,7 @@ fun HelpScreen(
         
         // Quick Help Buttons
         Text(
-            text = "ತ್ವರಿತ ಸಹಾಯ",
+            text = stringResource(R.string.quick_help),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF424242),
@@ -230,7 +230,7 @@ fun HelpScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    "📞 ಕರೆ ಮಾಡಿ",
+                    stringResource(R.string.call_support),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
@@ -246,7 +246,7 @@ fun HelpScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    "📹 ವಿಡಿಯೋ",
+                    stringResource(R.string.video_tutorial),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )

@@ -1,14 +1,11 @@
 package com.adarsh.mahilashaktiunnati.ui.screens
 
-import com.adarsh.mahilashaktiunnati.ui.models.QuickActionItem
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -26,12 +23,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adarsh.mahilashaktiunnati.R
+import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
+import com.adarsh.mahilashaktiunnati.ui.models.QuickActionItem
+import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.ui.theme.DesignSystem
 import com.adarsh.mahilashaktiunnati.ui.theme.Gradients
-import com.adarsh.mahilashaktiunnati.ui.theme.ComponentStyles
 import com.adarsh.mahilashaktiunnati.viewmodel.MemberViewModel
-import com.adarsh.mahilashaktiunnati.utils.LanguageManager
-import com.adarsh.mahilashaktiunnati.ui.components.LanguageSelector
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,70 +158,69 @@ fun ProfessionalHomeScreen(
 
 @Composable
 private fun HomeHeader(onLogout: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(DesignSystem.Shapes.Large),
-        colors = ComponentStyles.getCardColors(),
-        elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
+    Column(
+        modifier = Modifier.padding(DesignSystem.Padding.cardHorizontal, DesignSystem.Padding.cardVertical)
     ) {
-        Column(
-            modifier = Modifier.weight(1f)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = stringResource(R.string.welcome_admin),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = DesignSystem.Colors.TextPrimary
-            )
-            
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 14.sp
-                ),
-                color = DesignSystem.Colors.TextSecondary
-            )
-        }
-        
-        IconButton(
-            onClick = onLogout,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(DesignSystem.Shapes.Circle)
-                .background(DesignSystem.Colors.Error),
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = DesignSystem.Colors.Error
-            )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Logout,
-                contentDescription = stringResource(R.string.logout),
-                tint = DesignSystem.Colors.OnPrimary
-            )
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(DesignSystem.Shapes.Medium),
-                colors = CardDefaults.cardColors(
-                    containerColor = DesignSystem.Colors.Primary.copy(alpha = 0.1f)
-                )
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "👋 ಸ್ವಾಗತ! ನಿಮ್ಮ ಸಂಘಟನದ ನಿರ್ವಹಣಕ್ಕೆ ಸ್ವಾಗತ",
+                    text = stringResource(R.string.welcome_admin),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = DesignSystem.Colors.TextPrimary
+                )
+                
+                Text(
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium
+                        fontSize = 14.sp
                     ),
-                    color = DesignSystem.Colors.Primary,
-                    modifier = Modifier.padding(
-                        horizontal = DesignSystem.Padding.sectionHorizontal,
-                        vertical = DesignSystem.Padding.sectionVertical
-                    ),
-                    textAlign = TextAlign.Center
+                    color = DesignSystem.Colors.TextSecondary
                 )
             }
+            
+            IconButton(
+                onClick = onLogout,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(DesignSystem.Shapes.Circle)
+                    .background(DesignSystem.Colors.Error)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Logout,
+                    contentDescription = stringResource(R.string.logout),
+                    tint = DesignSystem.Colors.OnPrimary
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
+        
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(DesignSystem.Shapes.Medium),
+            colors = CardDefaults.cardColors(
+                containerColor = DesignSystem.Colors.Primary.copy(alpha = 0.1f)
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.welcome_message),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium
+                ),
+                color = DesignSystem.Colors.Primary,
+                modifier = Modifier.padding(12.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -246,7 +242,7 @@ private fun StatsCardsSection(
         StatItem(
             icon = Icons.Default.Savings,
             title = stringResource(R.string.savings),
-            value = "₹$totalSavings",
+            value = stringResource(R.string.currency_format, totalSavings),
             color = DesignSystem.Colors.Success,
             background = DesignSystem.Colors.Success.copy(alpha = 0.1f)
         ),
@@ -287,10 +283,7 @@ private fun StatCard(stat: StatItem) {
         elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Small)
     ) {
         Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.itemHorizontal,
-                vertical = DesignSystem.Padding.itemVertical
-            ),
+            modifier = Modifier.padding(DesignSystem.Padding.itemHorizontal, DesignSystem.Padding.itemVertical),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
         ) {
@@ -331,75 +324,77 @@ private fun QuickActionsSection(
     onNavigateToReport: () -> Unit,
     onNavigateToHelp: () -> Unit
 ) {
-    @Composable
-    fun getQuickActionItems(): List<QuickActionItem> {
-        return listOf(
-            QuickActionItem(
-                title = stringResource(R.string.members),
-                icon = "👥",
-                description = stringResource(R.string.members_description),
-                color = DesignSystem.Colors.Info,
-                onClick = onNavigateToMembers
-            ),
-            QuickActionItem(
-                title = stringResource(R.string.savings),
-                icon = "💰",
-                description = stringResource(R.string.savings_description),
-                color = DesignSystem.Colors.Success,
-                onClick = onNavigateToSavings
-            ),
-            QuickActionItem(
-                title = stringResource(R.string.loans),
-                icon = "🏦",
-                description = stringResource(R.string.loans_description),
-                color = DesignSystem.Colors.Warning,
-                onClick = onNavigateToLoans
-            ),
-            QuickActionItem(
-                title = stringResource(R.string.ai_assistant),
-                icon = "🤖",
-                description = stringResource(R.string.ai_description),
-                color = DesignSystem.Colors.Primary,
-                onClick = onNavigateToAI
-            ),
-            QuickActionItem(
-                title = stringResource(R.string.reports),
-                icon = "�",
-                description = stringResource(R.string.reports_description),
-                color = DesignSystem.Colors.Secondary,
-                onClick = onNavigateToReport
-            ),
-            QuickActionItem(
-                title = stringResource(R.string.help),
-                icon = "🛠️",
-                description = stringResource(R.string.help_description),
-                color = DesignSystem.Colors.Tertiary,
-                onClick = onNavigateToHelp
-            ),
-            QuickActionItem(
-                title = "ಸಹಾಯ",
-                icon = "❓",
-                description = "ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ",
-                color = DesignSystem.Colors.PrimaryVariant,
-                onClick = onNavigateToHelp
-            )
+    val quickActions = listOf(
+        QuickActionItem(
+            title = stringResource(R.string.members),
+            icon = "👥",
+            description = stringResource(R.string.members_description),
+            color = DesignSystem.Colors.Info,
+            onClick = onNavigateToMembers
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.savings),
+            icon = "💰",
+            description = stringResource(R.string.savings_description),
+            color = DesignSystem.Colors.Success,
+            onClick = onNavigateToSavings
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.loans),
+            icon = "🏦",
+            description = stringResource(R.string.loans_description),
+            color = DesignSystem.Colors.Warning,
+            onClick = onNavigateToLoans
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.ai_assistant),
+            icon = "🤖",
+            description = stringResource(R.string.ai_description),
+            color = DesignSystem.Colors.Primary,
+            onClick = onNavigateToAI
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.practical_features),
+            icon = "🛠️",
+            description = stringResource(R.string.essential_tools_description),
+            color = DesignSystem.Colors.Secondary,
+            onClick = onNavigateToPracticalFeatures
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.advanced_features),
+            icon = "🚀",
+            description = stringResource(R.string.production_tools_description),
+            color = DesignSystem.Colors.Tertiary,
+            onClick = onNavigateToAdvancedFeatures
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.reports),
+            icon = "📊",
+            description = stringResource(R.string.reports_description),
+            color = DesignSystem.Colors.Secondary,
+            onClick = onNavigateToReport
+        ),
+        QuickActionItem(
+            title = stringResource(R.string.help),
+            icon = "❓",
+            description = stringResource(R.string.help_description),
+            color = DesignSystem.Colors.Tertiary,
+            onClick = onNavigateToHelp
         )
-    }
+    )
 
     Column(
         modifier = Modifier.padding(DesignSystem.Grid.Padding),
         verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
         Text(
-            text = stringResource(R.string.recent_activity),
+            text = stringResource(R.string.quick_actions),
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
             color = DesignSystem.Colors.TextPrimary
         )
-        
-        val quickActions = getQuickActionItems()
-        
+
         // Use Column/Row instead of LazyVerticalGrid to avoid nested scroll issues in LazyColumn
         quickActions.chunked(2).forEach { rowItems ->
             Row(
@@ -436,10 +431,7 @@ private fun QuickActionCard(action: QuickActionItem) {
         elevation = ComponentStyles.getCardElevation()
     ) {
         Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.cardHorizontal,
-                vertical = DesignSystem.Padding.cardVertical
-            ),
+            modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
         ) {
@@ -483,41 +475,67 @@ private fun QuickActionCard(action: QuickActionItem) {
 
 @Composable
 fun RecentActivitySection() {
+    val newSavingsTitle = stringResource(R.string.new_savings_activity)
+    val newSavingsDescription = stringResource(R.string.new_savings_description)
+    val newMemberTitle = stringResource(R.string.new_member_activity)
+    val newMemberDescription = stringResource(R.string.new_member_description)
+    val loanApprovalTitle = stringResource(R.string.loan_approval_activity)
+    val loanApprovalDescription = stringResource(R.string.loan_approval_description)
+    val reportGenerationTitle = stringResource(R.string.report_generation_activity)
+    val reportGenerationDescription = stringResource(R.string.report_generation_description)
+    val twoHoursAgo = stringResource(R.string.two_hours_ago)
+    val fiveHoursAgo = stringResource(R.string.five_hours_ago)
+    val oneDayAgo = stringResource(R.string.one_day_ago)
+    val twoDaysAgo = stringResource(R.string.two_days_ago)
+    val activities = remember(
+        newSavingsTitle,
+        newSavingsDescription,
+        newMemberTitle,
+        newMemberDescription,
+        loanApprovalTitle,
+        loanApprovalDescription,
+        reportGenerationTitle,
+        reportGenerationDescription,
+        twoHoursAgo,
+        fiveHoursAgo,
+        oneDayAgo,
+        twoDaysAgo
+    ) {
+        buildRecentActivities(
+            newSavingsTitle = newSavingsTitle,
+            newSavingsDescription = newSavingsDescription,
+            newMemberTitle = newMemberTitle,
+            newMemberDescription = newMemberDescription,
+            loanApprovalTitle = loanApprovalTitle,
+            loanApprovalDescription = loanApprovalDescription,
+            reportGenerationTitle = reportGenerationTitle,
+            reportGenerationDescription = reportGenerationDescription,
+            twoHoursAgo = twoHoursAgo,
+            fiveHoursAgo = fiveHoursAgo,
+            oneDayAgo = oneDayAgo,
+            twoDaysAgo = twoDaysAgo
+        )
+    }
+
     Column(
+        modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
         Text(
-            text = "ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆಗಳು",
+            text = stringResource(R.string.recent_activities),
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
             color = DesignSystem.Colors.TextPrimary
         )
         
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(DesignSystem.Shapes.Large),
-            colors = ComponentStyles.getCardColors(),
-            elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
-        ) {
-            Column(
-                modifier = Modifier.padding(
-                    horizontal = DesignSystem.Padding.cardHorizontal,
-                    vertical = DesignSystem.Padding.cardVertical
-                ),
-                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
-            ) {
-                val activities = getRecentActivities()
-                activities.forEach { activity ->
-                    RecentActivityCard(activity = activity)
-                    if (activity != activities.last()) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = DesignSystem.Spacing.xs),
-                            color = DesignSystem.Colors.Border
-                        )
-                    }
-                }
+        activities.forEach { activity ->
+            RecentActivityCard(activity = activity)
+            if (activity != activities.last()) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    color = DesignSystem.Colors.Border
+                )
             }
         }
     }
@@ -587,34 +605,47 @@ data class RecentActivity(
     val color: Color
 )
 
-fun getRecentActivities(): List<RecentActivity> {
+fun buildRecentActivities(
+    newSavingsTitle: String,
+    newSavingsDescription: String,
+    newMemberTitle: String,
+    newMemberDescription: String,
+    loanApprovalTitle: String,
+    loanApprovalDescription: String,
+    reportGenerationTitle: String,
+    reportGenerationDescription: String,
+    twoHoursAgo: String,
+    fiveHoursAgo: String,
+    oneDayAgo: String,
+    twoDaysAgo: String
+): List<RecentActivity> {
     return listOf(
         RecentActivity(
             icon = "💰",
-            title = "ಹೊಸ ಉಳಿಳಿ",
-            description = "ಸುಮಾ 500 ಉಳಿಳಿ ಸೇರಿಸಲಾಯಿತು",
-            time = "2 ಗಂಟೆಗಳ ಹಿಂದೆ",
+            title = newSavingsTitle,
+            description = newSavingsDescription,
+            time = twoHoursAgo,
             color = DesignSystem.Colors.Success
         ),
         RecentActivity(
             icon = "👥",
-            title = "ಹೊಸ ಸದಸ್ಯ",
-            description = "ಸುಮಾ ರಮೇಶ್ ಸಂಘಟನಕ್ಕೆ ಸೇರಿದರು",
-            time = "5 ಗಂಟೆಗಳ ಹಿಂದೆ",
+            title = newMemberTitle,
+            description = newMemberDescription,
+            time = fiveHoursAgo,
             color = DesignSystem.Colors.Info
         ),
         RecentActivity(
             icon = "💳",
-            title = "ಸಾಣ ಅನುಮೋದನೆ",
-            description = "ಸುಮಾ ಶೋಭಾ ₹25,000 ಸಾಣ ಅನುಮೋದನೆ",
-            time = "1 ದಿನದ ಹಿಂದೆ",
+            title = loanApprovalTitle,
+            description = loanApprovalDescription,
+            time = oneDayAgo,
             color = DesignSystem.Colors.Warning
         ),
         RecentActivity(
             icon = "📊",
-            title = "ವರ್ಪೋರ್ಟ್ ಉತ್ಪಾದನೆ",
-            description = "ಮಾಸಿಕ ವರ್ಪೋರ್ಟ್ ಉತ್ಪಾದಿಸಲಾಯಿತು",
-            time = "2 ದಿನಗಳ ಹಿಂದೆ",
+            title = reportGenerationTitle,
+            description = reportGenerationDescription,
+            time = twoDaysAgo,
             color = DesignSystem.Colors.Primary
         )
     )

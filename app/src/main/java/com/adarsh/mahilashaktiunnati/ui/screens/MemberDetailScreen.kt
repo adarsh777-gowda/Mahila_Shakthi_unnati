@@ -60,7 +60,7 @@ fun MemberDetailScreen(
     if (showDeleteMember) {
         AlertDialog(
             onDismissRequest = { showDeleteMember = false },
-            title = { Text(stringResource(R.string.delete_member)) },
+            title = { Text(stringResource(R.string.delete_member_title)) },
             text = { Text(stringResource(R.string.delete_member_confirmation)) },
             confirmButton = {
                 Button(onClick = {
@@ -78,19 +78,20 @@ fun MemberDetailScreen(
     deleteSavingId?.let { id ->
         AlertDialog(
             onDismissRequest = { deleteSavingId = null },
-            title = { Text("Delete savings entry?") },
+            title = { Text(stringResource(R.string.delete_savings_entry)) },
+            text = { Text(stringResource(R.string.delete_savings_confirmation)) },
             confirmButton = {
                 Button(onClick = {
-                    deleteSavingId?.let { id ->
-                        savingsList.find { it.id == id }?.let { saving ->
+                    deleteSavingId?.let { savingId ->
+                        savingsList.find { it.id == savingId }?.let { saving ->
                             viewModel.deleteSaving(saving)
                         }
                     }
                     deleteSavingId = null
-                }) { Text("Delete") }
+                }) { Text(stringResource(R.string.delete)) }
             },
             dismissButton = {
-                Button(onClick = { deleteSavingId = null }) { Text("Cancel") }
+                Button(onClick = { deleteSavingId = null }) { Text(stringResource(R.string.cancel)) }
             }
         )
     }
@@ -98,19 +99,20 @@ fun MemberDetailScreen(
     deleteLoanId?.let { id ->
         AlertDialog(
             onDismissRequest = { deleteLoanId = null },
-            title = { Text("Delete loan?") },
+            title = { Text(stringResource(R.string.delete_loan_entry)) },
+            text = { Text(stringResource(R.string.delete_loan_confirmation)) },
             confirmButton = {
                 Button(onClick = {
-                    deleteLoanId?.let { id ->
-                        loanList.find { it.id == id }?.let { loan ->
+                    deleteLoanId?.let { loanId ->
+                        loanList.find { it.id == loanId }?.let { loan ->
                             viewModel.deleteLoan(loan)
                         }
                     }
                     deleteLoanId = null
-                }) { Text("Delete") }
+                }) { Text(stringResource(R.string.delete)) }
             },
             dismissButton = {
-                Button(onClick = { deleteLoanId = null }) { Text("Cancel") }
+                Button(onClick = { deleteLoanId = null }) { Text(stringResource(R.string.cancel)) }
             }
         )
     }
@@ -135,13 +137,13 @@ fun MemberDetailScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.ArrowBack, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Back")
+                    Text(stringResource(R.string.back))
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = member?.let { "${it.name} (${it.phone})" } ?: "Member",
+                text = member?.let { "${it.name} (${it.phone})" } ?: stringResource(R.string.member),
                 style = MaterialTheme.typography.headlineSmall
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -157,20 +159,20 @@ fun MemberDetailScreen(
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AsyncImage(
                         model = editPhoto,
-                        contentDescription = "Member photo",
+                        contentDescription = stringResource(R.string.member_details),
                         modifier = Modifier.size(72.dp)
                     )
                     Column(modifier = Modifier.weight(1f)) {
                         OutlinedTextField(
                             value = editName,
                             onValueChange = { editName = it },
-                            label = { Text("Name") },
+                            label = { Text(stringResource(R.string.member_name)) },
                             modifier = Modifier.fillMaxWidth()
                         )
                         OutlinedTextField(
                             value = editPhone,
                             onValueChange = { editPhone = it },
-                            label = { Text("Phone") },
+                            label = { Text(stringResource(R.string.member_phone)) },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -180,7 +182,7 @@ fun MemberDetailScreen(
                     Button(
                         onClick = { photoPicker.launch("image/*") },
                         modifier = Modifier.weight(1f)
-                    ) { Text("Pick Photo") }
+                    ) { Text(stringResource(R.string.pick_photo)) }
                     Button(
                         onClick = { 
                             member?.let { 
@@ -192,18 +194,18 @@ fun MemberDetailScreen(
                             }
                         },
                         modifier = Modifier.weight(1f)
-                    ) { Text("Save") }
+                    ) { Text(stringResource(R.string.save)) }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { showDeleteMember = true }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Delete Member")
+                    Text(stringResource(R.string.delete_member))
                 }
                 Button(
                     onClick = { viewModel.shareWhatsAppSummary(context, m) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Share WhatsApp Summary")
+                    Text(stringResource(R.string.share_whatsapp_summary))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -211,29 +213,29 @@ fun MemberDetailScreen(
         }
 
         item {
-            Text("Add Savings", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.add_savings), style = MaterialTheme.typography.titleMedium)
             OutlinedTextField(
                 value = amount,
                 onValueChange = { amount = it },
-                label = { Text("Amount") },
+                label = { Text(stringResource(R.string.savings_amount)) },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = week,
                 onValueChange = { week = it },
-                label = { Text("Week") },
+                label = { Text(stringResource(R.string.week)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(onClick = { statusMenu = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("Status: $status")
+                Text("${stringResource(R.string.savings_status)}: $status")
             }
             DropdownMenu(expanded = statusMenu, onDismissRequest = { statusMenu = false }) {
                 DropdownMenuItem(
-                    text = { Text("Paid") },
+                    text = { Text(stringResource(R.string.paid)) },
                     onClick = { status = "Paid"; statusMenu = false }
                 )
                 DropdownMenuItem(
-                    text = { Text("Pending") },
+                    text = { Text(stringResource(R.string.pending)) },
                     onClick = { status = "Pending"; statusMenu = false }
                 )
             }
@@ -253,10 +255,10 @@ fun MemberDetailScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("Add Savings") }
+            ) { Text(stringResource(R.string.add_savings)) }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Savings History", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.savings_history), style = MaterialTheme.typography.titleSmall)
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -283,29 +285,29 @@ fun MemberDetailScreen(
         }
 
         if (savingsList.isEmpty()) {
-            item { Text("No savings yet.", style = MaterialTheme.typography.bodyMedium) }
+            item { Text(stringResource(R.string.no_savings_yet), style = MaterialTheme.typography.bodyMedium) }
         }
 
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Add Loan", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.add_loan), style = MaterialTheme.typography.titleMedium)
 
             OutlinedTextField(
                 value = loanAmount,
                 onValueChange = { loanAmount = it },
-                label = { Text("Loan Amount") },
+                label = { Text(stringResource(R.string.loan_amount)) },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = loanDate,
                 onValueChange = { loanDate = it },
-                label = { Text("Date") },
+                label = { Text(stringResource(R.string.loan_date)) },
                 modifier = Modifier.fillMaxWidth(),
                 readOnly = true
             )
 
             Button(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("Pick Date")
+                Text(stringResource(R.string.pick_date))
             }
 
             Button(
@@ -318,10 +320,10 @@ fun MemberDetailScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("Add Loan") }
+            ) { Text(stringResource(R.string.add_loan)) }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Loan History", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.loan_history), style = MaterialTheme.typography.titleSmall)
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -331,18 +333,18 @@ fun MemberDetailScreen(
                     val interest = viewModel.calculateInterest(loan.principalAmount)
                     val total = viewModel.calculateTotal(loan.principalAmount)
 
-                    Text("Amount: ₹${loan.principalAmount}")
-                    Text("Interest (10%): ₹$interest")
-                    Text("Total Payable: ₹$total")
-                    Text("Date: ${java.util.Date(loan.disbursementDate)}")
-                    Text("Status: ${if (loan.isPaid) "Paid" else "Pending"}")
+                    Text(stringResource(R.string.loan_amount_display, loan.principalAmount))
+                    Text(stringResource(R.string.loan_interest_display, interest))
+                    Text(stringResource(R.string.loan_total_display, total))
+                    Text(stringResource(R.string.loan_date_display, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(loan.disbursementDate))))
+                    Text(stringResource(R.string.loan_status_display, if (loan.isPaid) stringResource(R.string.paid) else stringResource(R.string.pending)))
 
                     if (!loan.isPaid) {
                         Button(
                             onClick = { viewModel.markLoanPaid(loan.id) },
                             modifier = Modifier.padding(top = 8.dp)
                         ) {
-                            Text("Mark as Paid")
+                            Text(stringResource(R.string.mark_as_paid))
                         }
                     }
 
@@ -352,14 +354,14 @@ fun MemberDetailScreen(
                     ) {
                         Icon(Icons.Default.Delete, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.delete_loan_entry))
+                        Text(stringResource(R.string.delete_loan))
                     }
                 }
             }
         }
 
         if (loanList.isEmpty()) {
-            item { Text("No loans yet.", style = MaterialTheme.typography.bodyMedium) }
+            item { Text(stringResource(R.string.no_loans_yet), style = MaterialTheme.typography.bodyMedium) }
         }
     }
 }
@@ -378,9 +380,9 @@ private fun LoanDatePickerDialog(
                 val millis = state.selectedDateMillis ?: System.currentTimeMillis()
                 val dateStr = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(millis))
                 onDateSelected(dateStr)
-            }) { Text("OK") }
+            }) { Text(stringResource(R.string.ok)) }
         },
-        dismissButton = { Button(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { Button(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     ) {
         DatePicker(state = state)
     }

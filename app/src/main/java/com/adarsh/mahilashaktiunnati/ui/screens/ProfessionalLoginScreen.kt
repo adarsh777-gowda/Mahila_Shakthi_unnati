@@ -1,5 +1,6 @@
 package com.adarsh.mahilashaktiunnati.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -42,20 +43,30 @@ fun ProfessionalLoginScreen(
     var loginMethod by remember { mutableStateOf(LoginMethod.PHONE) }
     var password by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
+    var otpError by remember { mutableStateOf("") }
+    var isOtpSent by remember { mutableStateOf(false) }
     val phoneNotRegisteredMessage = stringResource(R.string.phone_not_registered)
     val invalidCredentialsMessage = stringResource(R.string.invalid_credentials)
     val enterBothCredentialsMessage = stringResource(R.string.enter_both_credentials)
+    val invalidOtpMessage = stringResource(R.string.invalid_otp)
+    val activityRequiredMessage = stringResource(R.string.activity_required_for_otp)
     
     // Initialize UserManager with demo users
     LaunchedEffect(Unit) {
-        UserManager.initializeDemoUsers()
+        UserManager.initialize(context)
     }
     
     val status by viewModel.status.collectAsState()
     
     LaunchedEffect(status) {
-        if (status is AuthViewModel.AuthStatus.LoggedIn) {
-            onLoginSuccess()
+        when (val currentStatus = status) {
+            AuthViewModel.AuthStatus.OtpSent -> isOtpSent = true
+            AuthViewModel.AuthStatus.LoggedIn -> onLoginSuccess()
+            is AuthViewModel.AuthStatus.Error -> {
+                if (isOtpSent) otpError = currentStatus.message else phoneError = currentStatus.message
+            }
+            else -> Unit
         }
     }
     
@@ -126,6 +137,8 @@ fun ProfessionalLoginScreen(
                     onPhoneChange = { 
                         phone = it
                         phoneError = ""
+                        otpError = ""
+                        isOtpSent = false
                         isRegisteredNumber = UserManager.isUserRegistered(it)
                     },
                     phoneError = phoneError,
@@ -136,13 +149,31 @@ fun ProfessionalLoginScreen(
                         passwordError = ""
                     },
                     passwordError = passwordError,
+                    otp = otp,
+                    onOtpChange = {
+                        otp = it
+                        otpError = ""
+                    },
+                    otpError = otpError,
+                    isOtpSent = isOtpSent,
                     onLoginClick = {
                         when (loginMethod) {
                             LoginMethod.PHONE -> {
-                                if (isRegisteredNumber) {
-                                    onLoginSuccess()
-                                } else {
+                                if (!isRegisteredNumber) {
                                     phoneError = phoneNotRegisteredMessage
+                                } else if (!isOtpSent) {
+                                    val activity = context as? Activity
+                                    if (activity != null) {
+                                        viewModel.sendOtp(phone, activity)
+                                    } else {
+                                        phoneError = activityRequiredMessage
+                                    }
+                                } else {
+                                    if (otp.length == 6) {
+                                        viewModel.verifyOtp(otp)
+                                    } else {
+                                        otpError = invalidOtpMessage
+                                    }
                                 }
                             }
                             LoginMethod.PASSWORD -> {
@@ -226,64 +257,56 @@ private fun LoginTypeSelector(
     selectedMethod: LoginMethod,
     onMethodSelected: (LoginMethod) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(DesignSystem.Shapes.Large),
-        colors = ComponentStyles.getCardColors(),
-        elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
+    Column(
+        modifier = Modifier.padding(
+            horizontal = DesignSystem.Padding.cardHorizontal,
+            vertical = DesignSystem.Padding.cardVertical
+        ),
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.cardHorizontal,
-                vertical = DesignSystem.Padding.cardVertical
+        Text(
+            text = stringResource(R.string.login_method),
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
             ),
-            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
+            color = DesignSystem.Colors.TextPrimary
+        )
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
         ) {
-            Text(
-                text = stringResource(R.string.login_method),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = DesignSystem.Colors.TextPrimary
+            FilterChip(
+                onClick = { onMethodSelected(LoginMethod.PHONE) },
+                label = { 
+                    Text(
+                        text = stringResource(R.string.phone_login),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                selected = selectedMethod == LoginMethod.PHONE,
+                modifier = Modifier.weight(1f),
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = DesignSystem.Colors.Primary,
+                    selectedLabelColor = DesignSystem.Colors.OnPrimary
+                )
             )
             
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
-            ) {
-                FilterChip(
-                    onClick = { onMethodSelected(LoginMethod.PHONE) },
-                    label = { 
-                        Text(
-                            text = stringResource(R.string.phone_login),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    selected = selectedMethod == LoginMethod.PHONE,
-                    modifier = Modifier.weight(1f),
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DesignSystem.Colors.Primary,
-                        selectedLabelColor = DesignSystem.Colors.OnPrimary
+            FilterChip(
+                onClick = { onMethodSelected(LoginMethod.PASSWORD) },
+                label = { 
+                    Text(
+                        text = stringResource(R.string.password_login),
+                        style = MaterialTheme.typography.bodyMedium
                     )
+                },
+                selected = selectedMethod == LoginMethod.PASSWORD,
+                modifier = Modifier.weight(1f),
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = DesignSystem.Colors.Primary,
+                    selectedLabelColor = DesignSystem.Colors.OnPrimary
                 )
-                
-                FilterChip(
-                    onClick = { onMethodSelected(LoginMethod.PASSWORD) },
-                    label = { 
-                        Text(
-                            text = stringResource(R.string.password_login),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    selected = selectedMethod == LoginMethod.PASSWORD,
-                    modifier = Modifier.weight(1f),
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DesignSystem.Colors.Primary,
-                        selectedLabelColor = DesignSystem.Colors.OnPrimary
-                    )
-                )
-            }
+            )
         }
     }
 }
@@ -298,122 +321,146 @@ private fun LoginForm(
     password: String,
     onPasswordChange: (String) -> Unit,
     passwordError: String,
+    otp: String,
+    onOtpChange: (String) -> Unit,
+    otpError: String,
+    isOtpSent: Boolean,
     onLoginClick: () -> Unit,
     status: AuthViewModel.AuthStatus
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(DesignSystem.Shapes.Large),
-        colors = ComponentStyles.getCardColors(),
-        elevation = CardDefaults.cardElevation(DesignSystem.Elevation.Medium)
+    Column(
+        modifier = Modifier.padding(
+            horizontal = DesignSystem.Padding.cardHorizontal,
+            vertical = DesignSystem.Padding.cardVertical
+        ),
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
     ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = DesignSystem.Padding.cardHorizontal,
-                vertical = DesignSystem.Padding.cardVertical
-            ),
-            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
-        ) {
-            // Phone Number Field
+        // Phone Number Field
+        OutlinedTextField(
+            value = phone,
+            onValueChange = onPhoneChange,
+            label = { Text(stringResource(R.string.member_phone)) },
+            placeholder = { Text(stringResource(R.string.phone_placeholder), color = DesignSystem.Colors.TextHint) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            singleLine = true,
+            enabled = status !is AuthViewModel.AuthStatus.SendingOtp,
+            isError = phoneError.isNotEmpty(),
+            shape = DesignSystem.Shapes.Medium,
+            colors = ComponentStyles.getInputFieldColors()
+        )
+        
+        // Phone Error Message
+        if (phoneError.isNotEmpty()) {
+            Text(
+                text = phoneError,
+                color = DesignSystem.Colors.Error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
+            )
+        }
+        
+        // Registration Status
+        if (phone.isNotEmpty() && !isRegisteredNumber) {
+            Text(
+                text = stringResource(R.string.phone_not_registered),
+                color = DesignSystem.Colors.Warning,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
+            )
+        }
+        
+        // Password Field (only for password login)
+        if (loginMethod == LoginMethod.PASSWORD) {
             OutlinedTextField(
-                value = phone,
-                onValueChange = onPhoneChange,
-                label = { Text(stringResource(R.string.member_phone)) },
-                placeholder = { Text("+91XXXXXXXXXX", color = DesignSystem.Colors.TextHint) },
+                value = password,
+                onValueChange = onPasswordChange,
+                label = { Text(stringResource(R.string.password)) },
+                placeholder = { Text(stringResource(R.string.password_hint), color = DesignSystem.Colors.TextHint) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
                 enabled = status !is AuthViewModel.AuthStatus.SendingOtp,
-                isError = phoneError.isNotEmpty(),
+                isError = passwordError.isNotEmpty(),
                 shape = DesignSystem.Shapes.Medium,
                 colors = ComponentStyles.getInputFieldColors()
             )
             
-            // Phone Error Message
-            if (phoneError.isNotEmpty()) {
+            // Password Error Message
+            if (passwordError.isNotEmpty()) {
                 Text(
-                    text = phoneError,
+                    text = passwordError,
                     color = DesignSystem.Colors.Error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
                 )
             }
-            
-            // Registration Status
-            if (phone.isNotEmpty() && !isRegisteredNumber) {
+        }
+
+        if (loginMethod == LoginMethod.PHONE && isOtpSent) {
+            OutlinedTextField(
+                value = otp,
+                onValueChange = onOtpChange,
+                label = { Text(stringResource(R.string.otp)) },
+                placeholder = { Text(stringResource(R.string.otp_placeholder), color = DesignSystem.Colors.TextHint) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                enabled = status !is AuthViewModel.AuthStatus.SendingOtp && status !is AuthViewModel.AuthStatus.Verifying,
+                isError = otpError.isNotEmpty(),
+                shape = DesignSystem.Shapes.Medium,
+                colors = ComponentStyles.getInputFieldColors()
+            )
+
+            if (otpError.isNotEmpty()) {
                 Text(
-                    text = stringResource(R.string.phone_not_registered),
-                    color = DesignSystem.Colors.Warning,
+                    text = otpError,
+                    color = DesignSystem.Colors.Error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
                 )
             }
-            
-            // Password Field (only for password login)
-            if (loginMethod == LoginMethod.PASSWORD) {
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = onPasswordChange,
-                    label = { Text(stringResource(R.string.password)) },
-                    placeholder = { Text(stringResource(R.string.password_hint), color = DesignSystem.Colors.TextHint) },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    singleLine = true,
-                    enabled = status !is AuthViewModel.AuthStatus.SendingOtp,
-                    isError = passwordError.isNotEmpty(),
-                    shape = DesignSystem.Shapes.Medium,
-                    colors = ComponentStyles.getInputFieldColors()
+        }
+        
+        Spacer(modifier = Modifier.height(DesignSystem.Spacing.sm))
+        
+        // Login Button
+        Button(
+            onClick = onLoginClick,
+            enabled = when (loginMethod) {
+                LoginMethod.PHONE -> status !is AuthViewModel.AuthStatus.SendingOtp &&
+                    status !is AuthViewModel.AuthStatus.Verifying &&
+                    isRegisteredNumber &&
+                    (!isOtpSent || otp.length == 6)
+                LoginMethod.PASSWORD -> status !is AuthViewModel.AuthStatus.SendingOtp && phone.isNotEmpty() && password.isNotEmpty()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DesignSystem.Buttons.Height),
+            colors = ComponentStyles.getPrimaryButtonColors(),
+            shape = DesignSystem.Shapes.Medium
+        ) {
+            if (status is AuthViewModel.AuthStatus.SendingOtp || status is AuthViewModel.AuthStatus.Verifying) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(DesignSystem.Icons.Medium),
+                    strokeWidth = 2.dp,
+                    color = DesignSystem.Colors.OnPrimary
                 )
-                
-                // Password Error Message
-                if (passwordError.isNotEmpty()) {
-                    Text(
-                        text = passwordError,
-                        color = DesignSystem.Colors.Error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = DesignSystem.Spacing.sm)
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(DesignSystem.Spacing.sm))
-            
-            // Login Button
-            Button(
-                onClick = onLoginClick,
-                enabled = when (loginMethod) {
-                    LoginMethod.PHONE -> status !is AuthViewModel.AuthStatus.SendingOtp && isRegisteredNumber
-                    LoginMethod.PASSWORD -> status !is AuthViewModel.AuthStatus.SendingOtp && phone.isNotEmpty() && password.isNotEmpty()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DesignSystem.Buttons.Height),
-                colors = ComponentStyles.getPrimaryButtonColors(),
-                shape = DesignSystem.Shapes.Medium
-            ) {
-                if (status is AuthViewModel.AuthStatus.SendingOtp) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(DesignSystem.Icons.Medium),
-                        strokeWidth = 2.dp,
-                        color = DesignSystem.Colors.OnPrimary
-                    )
-                    Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
-                    Text(
-                        text = "OTP ಕಳುಹಿಸುತ್ತಿದೆ...",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                } else {
-                    Text(
-                        text = when (loginMethod) {
-                            LoginMethod.PHONE -> "OTP ಕಳುಹಿಸಿ"
-                            LoginMethod.PASSWORD -> "ಲಾಗಿನ್ ಮಾಡಿ"
-                        },
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
+                Text(
+                    text = stringResource(R.string.sending_otp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+            } else {
+                Text(
+                    text = when (loginMethod) {
+                        LoginMethod.PHONE -> if (isOtpSent) stringResource(R.string.login_button) else stringResource(R.string.send_otp)
+                        LoginMethod.PASSWORD -> stringResource(R.string.login_button)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

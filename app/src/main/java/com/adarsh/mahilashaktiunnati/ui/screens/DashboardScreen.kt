@@ -102,8 +102,9 @@ fun DashboardScreen(
                             )
                         }
                         is MemberViewModel.SyncStatus.Error -> {
+                            val errorMessage = (syncStatus as MemberViewModel.SyncStatus.Error).message ?: ""
                             Text(
-                                text = stringResource(R.string.sync_failed, (syncStatus as MemberViewModel.SyncStatus.Error).message ?: ""),
+                                text = stringResource(R.string.sync_failed, errorMessage),
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.fillMaxWidth()
@@ -120,7 +121,7 @@ fun DashboardScreen(
                             enabled = syncStatus !is MemberViewModel.SyncStatus.Syncing,
                             modifier = Modifier.weight(1f)
                         ) { 
-                            Text(if (syncStatus is MemberViewModel.SyncStatus.Syncing) "Syncing..." else "Sync to Cloud") 
+                            Text(if (syncStatus is MemberViewModel.SyncStatus.Syncing) stringResource(R.string.syncing) else stringResource(R.string.sync_to_cloud)) 
                         }
 
                         Button(
@@ -128,7 +129,7 @@ fun DashboardScreen(
                             enabled = syncStatus !is MemberViewModel.SyncStatus.Syncing,
                             modifier = Modifier.weight(1f)
                         ) { 
-                            Text(if (syncStatus is MemberViewModel.SyncStatus.Syncing) "Fetching..." else "Fetch from Cloud") 
+                            Text(if (syncStatus is MemberViewModel.SyncStatus.Syncing) stringResource(R.string.fetching) else stringResource(R.string.fetch_from_cloud)) 
                         }
                     }
 
@@ -140,7 +141,7 @@ fun DashboardScreen(
                             onLogout()
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("Logout") }
+                    ) { Text(stringResource(R.string.logout)) }
 
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -162,7 +163,7 @@ fun DashboardScreen(
                                 Text(text = "📡", style = MaterialTheme.typography.bodyLarge)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "Offline Mode - Data will sync when connection is restored",
+                                    text = stringResource(R.string.offline_mode_warning),
                                     color = MaterialTheme.colorScheme.onErrorContainer,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
@@ -177,7 +178,7 @@ fun DashboardScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Mahila-Shakti Dashboard",
+                            text = stringResource(R.string.dashboard),
                             style = MaterialTheme.typography.headlineMedium
                         )
                         
@@ -185,7 +186,7 @@ fun DashboardScreen(
                             IconButton(onClick = onNavigateToAI) {
                                 Icon(
                                     imageVector = Icons.Default.SmartToy,
-                                    contentDescription = "AI Assistant",
+                                    contentDescription = stringResource(R.string.ai_assistant),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
@@ -193,7 +194,7 @@ fun DashboardScreen(
                             IconButton(onClick = onNavigateToPracticalFeatures) {
                                 Icon(
                                     imageVector = Icons.Default.Settings,
-                                    contentDescription = "Practical Features",
+                                    contentDescription = stringResource(R.string.settings),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
@@ -204,17 +205,17 @@ fun DashboardScreen(
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         SummaryCard(
-                            title = "Total Savings",
+                            title = stringResource(R.string.total_savings),
                             value = "₹${totalSavings ?: 0}",
                             modifier = Modifier.weight(1f)
                         )
                         SummaryCard(
-                            title = "Total Loan",
+                            title = stringResource(R.string.total_loans),
                             value = "₹${totalLoan ?: 0}",
                             modifier = Modifier.weight(1f)
                         )
                         SummaryCard(
-                            title = "Members",
+                            title = stringResource(R.string.members),
                             value = "${members.size}",
                             modifier = Modifier.weight(1f)
                         )
@@ -222,7 +223,7 @@ fun DashboardScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text("Add Member", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.add_member), style = MaterialTheme.typography.titleMedium)
 
                     OutlinedTextField(
                         value = name,
@@ -230,7 +231,7 @@ fun DashboardScreen(
                             name = it
                             nameError = null
                         },
-                        label = { Text("Name") },
+                        label = { Text(stringResource(R.string.member_name)) },
                         modifier = Modifier.fillMaxWidth(),
                         isError = nameError != null,
                         supportingText = nameError?.let { { Text(it) } }
@@ -242,7 +243,7 @@ fun DashboardScreen(
                             phone = it
                             phoneError = null
                         },
-                        label = { Text("Phone") },
+                        label = { Text(stringResource(R.string.member_phone)) },
                         modifier = Modifier.fillMaxWidth(),
                         isError = phoneError != null,
                         supportingText = phoneError?.let { { Text(it) } }
@@ -265,15 +266,15 @@ fun DashboardScreen(
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("Add Member") }
+                    ) { Text(stringResource(R.string.add_member)) }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Members", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.members), style = MaterialTheme.typography.titleMedium)
 
                     OutlinedTextField(
                         value = query,
                         onValueChange = { query = it },
-                        label = { Text("Search by name/phone") },
+                        label = { Text(stringResource(R.string.search_members_hint)) },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -290,7 +291,7 @@ fun DashboardScreen(
                         Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             AsyncImage(
                                 model = member.photoUri,
-                                contentDescription = "Member photo",
+                                contentDescription = stringResource(R.string.member_details),
                                 modifier = Modifier.size(48.dp)
                             )
                             Column {
@@ -317,7 +318,7 @@ fun DashboardScreen(
                                 openPdf(localContext, file)
                             },
                             modifier = Modifier.weight(1f)
-                        ) { Text("Open PDF") }
+                        ) { Text(stringResource(R.string.open_pdf)) }
 
                         Button(
                             onClick = {
@@ -330,7 +331,7 @@ fun DashboardScreen(
                                 sharePdf(localContext, file)
                             },
                             modifier = Modifier.weight(1f)
-                        ) { Text("Share PDF") }
+                        ) { Text(stringResource(R.string.share_pdf)) }
                     }
                 }
             }

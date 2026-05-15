@@ -153,7 +153,7 @@ private fun SimpleAdvancedSection(
                 onClick = { /* TODO: Implement feature */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Coming Soon")
+                Text(stringResource(R.string.coming_soon))
             }
         }
     }

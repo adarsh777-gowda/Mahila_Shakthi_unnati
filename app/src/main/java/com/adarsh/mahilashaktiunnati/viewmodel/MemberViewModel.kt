@@ -13,6 +13,7 @@ import com.adarsh.mahilashaktiunnati.data.entities.Loan
 import com.adarsh.mahilashaktiunnati.data.entities.Member
 import com.adarsh.mahilashaktiunnati.data.entities.Savings
 import com.adarsh.mahilashaktiunnati.utils.DataExportImport
+import com.adarsh.mahilashaktiunnati.utils.ValidationUtils
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -35,6 +36,12 @@ class MemberViewModel(
     val totalLoan = loanDao.getTotalActiveLoansAmount()
         .map { it ?: 0L }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
+
+    val savings = savingsDao.getAllSavings()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val loans = loanDao.getAllLoans()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Real-time Total Group Capital calculation
     val totalGroupCapital: StateFlow<Long> = savingsDao.getTotalPaidSavings()
@@ -59,6 +66,11 @@ class MemberViewModel(
     // Success Criteria: Prevent loan if unpaid exists
     fun addLoan(memberId: Int, amount: Long, disbursementDate: Long, dueDate: Long) {
         viewModelScope.launch {
+            if (amount <= 0) {
+                _uiMessage.value = "Loan amount must be greater than 0"
+                return@launch
+            }
+
             val hasActiveLoan = loanDao.hasActiveLoan(memberId)
             if (hasActiveLoan) {
                 _uiMessage.value = "Cannot add loan: Member has an existing unpaid loan."
@@ -92,7 +104,8 @@ class MemberViewModel(
             val summaryText = """
                 *Mahila Shakti Unnati - Summary*
                 Member: ${member.name}
-                Total Savings: ₹$mSavings
+                Phone: ${member.phone}
+                Total Paid Savings: Rs.$mSavings
                 Generated via Digital Ledger
             """.trimIndent()
 
@@ -112,6 +125,16 @@ class MemberViewModel(
         date: Long = System.currentTimeMillis()
     ) {
         viewModelScope.launch {
+            if (amount <= 0) {
+                _uiMessage.value = "Savings amount must be greater than 0"
+                return@launch
+            }
+            val weekValidation = ValidationUtils.validateWeek(week)
+            if (!weekValidation.isValid) {
+                _uiMessage.value = weekValidation.errorMessage
+                return@launch
+            }
+
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             val currentTime = System.currentTimeMillis()
             savingsDao.insertSavings(
@@ -202,6 +225,21 @@ class MemberViewModel(
     fun updateMember(member: Member) {
         viewModelScope.launch {
             try {
+                val nameValidation = ValidationUtils.validateName(member.name)
+                val phoneValidation = ValidationUtils.validatePhoneNumber(member.phone)
+                if (!nameValidation.isValid) {
+                    _uiMessage.value = nameValidation.errorMessage
+                    return@launch
+                }
+                if (!phoneValidation.isValid) {
+                    _uiMessage.value = phoneValidation.errorMessage
+                    return@launch
+                }
+                if (memberDao.isPhoneExists(member.phone, member.id)) {
+                    _uiMessage.value = "Phone number already exists"
+                    return@launch
+                }
+
                 memberDao.updateMember(member)
                 _uiMessage.value = "Member updated successfully"
             } catch (e: Exception) {
@@ -246,6 +284,21 @@ class MemberViewModel(
     fun addMember(name: String, phone: String, photoUri: String? = null) {
         viewModelScope.launch {
             try {
+                val nameValidation = ValidationUtils.validateName(name)
+                val phoneValidation = ValidationUtils.validatePhoneNumber(phone)
+                if (!nameValidation.isValid) {
+                    _uiMessage.value = nameValidation.errorMessage
+                    return@launch
+                }
+                if (!phoneValidation.isValid) {
+                    _uiMessage.value = phoneValidation.errorMessage
+                    return@launch
+                }
+                if (memberDao.isPhoneExists(phone.trim())) {
+                    _uiMessage.value = "Phone number already exists"
+                    return@launch
+                }
+
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
                 val currentTime = System.currentTimeMillis()
                 val member = Member(

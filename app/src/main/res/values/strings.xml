@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MahilaShaktiUnnati</string>
-    
+
     <!-- Common -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -18,7 +18,11 @@
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    
+    <string name="coming_soon">Coming Soon</string>
+    <string name="close">Close</string>
+    <string name="currency_symbol">₹</string>
+    <string name="currency_format">₹%1$s</string>
+
     <!-- Authentication -->
     <string name="login">Login</string>
     <string name="register">Register</string>
@@ -26,6 +30,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="retype_password_hint">Retype your password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="login_success">Login Successful</string>
     <string name="register_success">Registration Successful</string>
@@ -34,9 +39,13 @@
     <string name="phone_not_registered">This number is not registered. Please register first.</string>
     <string name="sending_otp">Sending OTP...</string>
     <string name="send_otp">Send OTP</string>
+    <string name="complete_registration">Complete Registration</string>
     <string name="register_prompt">Don\'t have an account? Register now!</string>
+    <string name="already_have_account">Already have an account?</string>
     <string name="login_subtitle">Women Empowerment Through Financial Independence</string>
+    <string name="register_subtitle">Organize with our women\'s self-help group</string>
     <string name="login_method">Login Method</string>
+    <string name="registration_method">Registration Method</string>
     <string name="phone_login">Phone Login</string>
     <string name="password_login">Password Login</string>
     <string name="password_hint">Enter your password</string>
@@ -51,16 +60,24 @@
     <string name="registration_success">Registration Successful</string>
     <string name="enter_username_hint">Enter username</string>
     <string name="enter_phone_hint">Enter phone number</string>
+    <string name="phone_placeholder">+91XXXXXXXXXX</string>
+    <string name="otp_placeholder">6-digit OTP</string>
+    <string name="username_placeholder">Username</string>
     <string name="enter_both_credentials">Please enter both phone number and password</string>
     <string name="invalid_username">Invalid username</string>
     <string name="invalid_password">Invalid password</string>
     <string name="username">Username</string>
     <string name="full_name">Full Name</string>
     <string name="otp">OTP</string>
+    <string name="otp_method_label">📱 OTP</string>
+    <string name="password_method_label">🔐 Password</string>
+    <string name="login_button">Login</string>
+    <string name="logging_in">Logging in...</string>
 
     <!-- Navigation -->
     <string name="home">Home</string>
     <string name="dashboard">Dashboard</string>
+    <string name="member">Member</string>
     <string name="members">Members</string>
     <string name="savings">Savings</string>
     <string name="loans">Loans</string>
@@ -69,14 +86,16 @@
     <string name="settings">Settings</string>
     <string name="profile">Profile</string>
     <string name="language">Language</string>
-    
+    <string name="member_directory">Member Directory</string>
+
     <!-- Member related -->
     <string name="member_name">Member Name</string>
     <string name="member_phone">Phone Number</string>
     <string name="member_id">Member ID</string>
     <string name="add_member">Add Member</string>
     <string name="edit_member">Edit Member</string>
-    <string name="delete_member">Delete Member?</string>
+    <string name="delete_member">Delete Member</string>
+    <string name="delete_member_title">Delete member?</string>
     <string name="member_details">Member Details</string>
     <string name="total_members">Total Members</string>
     <string name="active_members">Active Members</string>
@@ -84,6 +103,9 @@
     <string name="search_members_hint">Search members by name or phone...</string>
     <string name="no_members_found">No members found. Add your first member to get started!</string>
     <string name="no_members_found_for_query">No members found for \"%s\"</string>
+    <string name="pick_photo">Pick Photo</string>
+    <string name="member_photo">Member photo</string>
+    <string name="week">Week</string>
 
     <!-- Savings related -->
     <string name="savings_amount">Savings Amount</string>
@@ -91,7 +113,9 @@
     <string name="total_savings">Total Savings</string>
     <string name="weekly_savings">Weekly Savings</string>
     <string name="monthly_savings">Monthly Savings</string>
+    <string name="savings_status">Savings Status</string>
     <string name="savings_history">Savings History</string>
+    <string name="no_savings_yet">No savings yet.</string>
     <string name="delete_savings_entry">Delete savings entry?</string>
     <string name="delete_savings_confirmation">This will remove the savings entry from your records.</string>
 
@@ -104,20 +128,38 @@
     <string name="total_loans">Total Loans</string>
     <string name="active_loans">Active Loans</string>
     <string name="loan_status">Loan Status</string>
+    <string name="loan_history">Loan History</string>
     <string name="paid">Paid</string>
     <string name="pending">Pending</string>
+    <string name="mark_as_paid">Mark as Paid</string>
+    <string name="no_loans_yet">No loans yet.</string>
+    <string name="delete_loan">Delete loan?</string>
     <string name="delete_loan_entry">Delete loan entry?</string>
     <string name="delete_loan_confirmation">This will remove the loan entry from your records.</string>
+    <string name="loan_amount_display">Amount: ₹%1$d</string>
+    <string name="loan_interest_display">Interest (10%%): ₹%1$d</string>
+    <string name="loan_total_display">Total Payable: ₹%1$d</string>
+    <string name="loan_date_display">Date: %1$s</string>
+    <string name="loan_status_display">Status: %1$s</string>
+    <string name="pick_date">Pick Date</string>
 
     <!-- Dashboard -->
     <string name="overview">Overview</string>
     <string name="statistics">Statistics</string>
     <string name="recent_activity">Recent Activity</string>
+    <string name="recent_activities">Recent Activities</string>
     <string name="financial_summary">Financial Summary</string>
     <string name="welcome_admin">Welcome, Admin!</string>
+    <string name="welcome_message">👋 Welcome! Welcome to your organization management</string>
+    <string name="sync_to_cloud">Sync to Cloud</string>
+    <string name="fetch_from_cloud">Fetch from Cloud</string>
+    <string name="offline_mode_warning">Offline Mode - Data will sync when connection is restored</string>
+    <string name="offline_mode_message">Offline Mode - Data will sync when connection is restored</string>
     <string name="syncing">Syncing...</string>
+    <string name="fetching">Fetching...</string>
     <string name="sync_completed">Sync completed</string>
     <string name="sync_failed">Sync failed: %s</string>
+    <string name="quick_actions">Quick Actions</string>
 
     <!-- AI Assistant -->
     <string name="ask_ai">Ask AI</string>
@@ -134,11 +176,17 @@
     <string name="analyze_all_data">Analyze All Data</string>
     <string name="clear_chat">Clear Chat</string>
     <string name="ai_description">Get AI assistance</string>
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
 
     <!-- Reports -->
     <string name="generate_report">Generate Report</string>
     <string name="export_pdf">Export PDF</string>
+    <string name="open_pdf">Open PDF</string>
+    <string name="share_pdf">Share PDF</string>
     <string name="share_report">Share Report</string>
+    <string name="share_whatsapp_summary">Share WhatsApp Summary</string>
     <string name="weekly_report">Weekly Report</string>
     <string name="monthly_report">Monthly Report</string>
     <string name="generate_members_report">Generate Members Report</string>
@@ -150,6 +198,10 @@
     <string name="share_whatsapp">Share WhatsApp</string>
     <string name="download_report">Download Report</string>
     <string name="reports_description">View and generate reports</string>
+    <string name="select_report_prompt">Select Report</string>
+    <string name="generate_report_button">Generate Report</string>
+    <string name="select_report_type">Select Report Type</string>
+    <string name="share_report_title">Share Report</string>
 
     <!-- Language Selection -->
     <string name="select_language">Select Language</string>
@@ -163,6 +215,7 @@
     <string name="loans_description">View and manage loans</string>
     <string name="help_description">Get help and support for your women\'s self-help group</string>
     <string name="advanced_features">Advanced Features</string>
+    <string name="practical_features_title">Practical Features</string>
     <string name="production_tools_description">Production-ready tools for women\'s self-help groups</string>
     <string name="voice_recording">Voice Recording</string>
     <string name="voice_recording_tab">Voice Recording</string>
@@ -186,6 +239,7 @@
 
     <!-- Help & Support -->
     <string name="help">Help &amp; Support</string>
+    <string name="help_welcome">Welcome to our help and support center</string>
     <string name="loan_management">Loan Management</string>
     <string name="loan_management_description">Manage loans, track repayments, and view loan history</string>
     <string name="loan_question_1">How do I apply for a new loan?</string>
@@ -206,6 +260,18 @@
     <string name="ai_question_1">How can AI help me with my finances?</string>
     <string name="ai_question_2">What financial insights can AI provide?</string>
     <string name="ai_question_3">How do I use AI features effectively?</string>
+    <string name="ai_help_category">AI Help</string>
+    <string name="ai_help_description">AI guidance assistance</string>
+    <string name="quick_help">Quick Help</string>
+    <string name="call_support">📞 Call</string>
+    <string name="video_tutorial">📹 Video</string>
+    <string name="ai_q1">How to view your savings trend?</string>
+    <string name="ai_q2">How to know loan eligibility?</string>
+    <string name="ai_q3">How to talk with AI assistant?</string>
+    <string name="ai_q4">How to generate reports?</string>
+    <string name="help_center_welcome">Welcome to our help and support center</string>
+    <string name="call_us">📞 Call Us</string>
+    <string name="video_help">📹 Video Help</string>
 
     <!-- Practical Features -->
     <string name="practical_features">Practical Features</string>
@@ -231,5 +297,29 @@
     <string name="emergency_description">Manage emergency contact lists</string>
     <string name="financial_description">Track financial literacy metrics</string>
     <string name="vernacular_description">Generate content in local languages</string>
-    <string name="coming_soon">Coming Soon</string>
+
+    <!-- Recent Activity Mock Data (for demo) -->
+    <string name="new_savings_activity">New Savings</string>
+    <string name="new_savings_description">Sumal ₹500 savings added</string>
+    <string name="new_member_activity">New Member</string>
+    <string name="new_member_description">Suma Ramesh joined the organization</string>
+    <string name="loan_approval_activity">Loan Approval</string>
+    <string name="loan_approval_description">Shobha ₹25,000 loan approved</string>
+    <string name="report_generation_activity">Report Generation</string>
+    <string name="report_generation_description">Monthly report generated</string>
+    <string name="two_hours_ago">2 hours ago</string>
+    <string name="five_hours_ago">5 hours ago</string>
+    <string name="one_day_ago">1 day ago</string>
+    <string name="two_days_ago">2 days ago</string>
+
+    <!-- Share Strings -->
+    <string name="share_to_whatsapp">Share to WhatsApp</string>
+    <string name="member_summary">Member Summary</string>
+    <string name="member_summary_description">Complete member details</string>
+    <string name="weekly_report_description">Last 7 days activity</string>
+    <string name="group_summary">Group Summary</string>
+    <string name="group_summary_description">All members overview</string>
+    <string name="pdf_export">PDF Export</string>
+    <string name="pdf_export_description">Download as PDF</string>
+    <string name="share_via">Share via</string>
 </resources>
